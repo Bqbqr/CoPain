@@ -1,0 +1,79 @@
+.qty {
+    width: 40px;
+    text-align: center;
+}
+
+tr.strikeout td:before {
+    content: " ";
+    position: absolute;
+    top: 50%;
+    left: 0;
+    border-bottom: 1px solid #111;
+    width: 100%;
+}
+
+span.glyphicon{
+    font-size: 1.2em;
+}
+
+body{
+	padding-top: 65px;
+}
+
+.article{
+	width: 30%;
+}
+
+.btn-article{
+	margin-bottom: 10px;
+}
+
+#reset{
+	float: right;
+}
+
+pre{
+	padding-bottom: 0;
+}
+#confirmBox
+{
+    display: none;
+    background-color: #eee;
+    border-radius: 5px;
+    border: 1px solid #aaa;
+    position: absolute;
+    /* top: 0; */
+    width: 100%;
+    /* margin-top: 20%; */
+    height: 96%;
+    z-index: 8;
+    /* overflow: overlay; */
+    /* left: 50%; */
+    /* margin-left: -150px; */
+    padding: 6px 8px 8px;
+    box-sizing: border-box;
+    text-align: center;
+}
+#confirmBox .button {
+    background-color: #ccc;
+    display: inline-block;
+    border-radius: 3px;
+    border: 1px solid #aaa;
+    /* padding: 2px; */
+    text-align: center;
+    width: 60%;
+    margin-top: 10%;
+    line-height: 40px;
+    /* text-align: -webkit-auto; */
+    height: 40px;
+    cursor: pointer;
+}
+#confirmBox .button:hover
+{
+    background-color: #ddd;
+}
+#confirmBox .message
+{
+    text-align: left;
+    margin-bottom: 8px;
+}
