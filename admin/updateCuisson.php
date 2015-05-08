@@ -17,7 +17,7 @@ if(isset($_GET['pac']))      $pac=$_GET['pac'];
 else      $pac="0";
 
 // on se connecte à MySQL 
-include('secure/config.php');
+include('../secure/config.php');
 $db=mysql_connect($SQLhost, $SQLlogin, $SQLpass) or die(mysql_error());
 // sélection de la base  
 
