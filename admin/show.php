@@ -85,7 +85,7 @@ mysql_select_db('pain',$db);
         </div>
         <div id="navbar" class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
-            <li><a href="admin.php">Admin</a></li>
+            <li><a href="index.php">Admin</a></li>
             <li class="active"><a href="show.php">Commandes du jour</a></li>
             <li><a href="delete.php">Suppression</a></li>
             <li><a href="cook.php">Stocks</a></li>
