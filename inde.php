@@ -16,45 +16,34 @@
     <script src="js/jquery-1.11.2.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
     <script type="text/javascript">
-    $(document).ready(function() { 
-      var croissantptd = 0;
-      var pacptd = 0;
-      var bagptd = 0;
+    $(document).ready(function() {
+      var array= {};
+      
+      //POUR LA PROCHAINE FOIS:
+      //Gérer l'array dans .option. 
+      //http://stackoverflow.com/questions/1144705/best-way-to-store-a-key-value-array-in-javascript
+      
       //Test pour la askBox
-
       function doConfirm(msg, croissant, pac, cancel) {
           var confirmBox = $("#confirmBox");
           confirmBox.find(".message").text(msg);
-          confirmBox.find(".croissantV,.pacV, .cancel").unbind().click(function () {
+          confirmBox.find(".option, .cancel").unbind().click(function () {
               confirmBox.hide();
           });
-          confirmBox.find(".croissantV").click(croissant);
-          confirmBox.find(".pacV").click(pac);
           confirmBox.find(".cancel").click(cancel);
           confirmBox.show();
       }
 
-      $(document).on("click", ".petitdej", function(){
-        var id=$(this).attr('id');
-        var price=$(this).attr('price');
-        doConfirm("Quelle Viennoiserie?", 
-          function croissantV(){
-            croissantptd+=1;
-            bagptd++;
-            addArticle(id,price);
+      //Fonction ajout d'article dans le tableau général
+      function addTab(key){
+        if(key in array){
+          array[key]++;
+        }else
+        {
+          array[key]=1;          
+        }
+      }
 
-          }, function pacV() {
-            pacptd+=1;
-            bagptd++;
-            addArticle(id,price);
-          }, function cancel() {
-              //Nothing done.
-          });
-      });
-
-
-
-      //Fin du test
       //Fonction d'ajout d'article
       function addArticle(id, price){
         //On récupère la table
@@ -73,6 +62,7 @@
             table.rows[row].cells[2].innerHTML=(parseFloat(table.rows[row].cells[2].innerHTML)+parseFloat(price)).toFixed(2);
           }
           else{
+
             //Création d'une tr en dernier (-1) ou on modifie la ligne
             var row = table.insertRow(row);
 
@@ -96,6 +86,7 @@
 
       function resetPanier(){
         var table = document.getElementById("paniert");
+        array={};
 
         $.ajax({
 
@@ -112,6 +103,40 @@
         document.getElementById("emplacement").value="";
       }
 
+
+
+      $(document).on("click", ".petitdej", function(){
+        var id=$(this).attr('id');
+        var price=$(this).attr('price');
+        doConfirm("Quelle Viennoiserie?", 
+          function cancel() {
+              //Nothing done.
+          });
+      });
+
+      $(document).on("click", ".option", function(){
+        var idObjet=$(this).attr('value');
+        var article=$(this).attr('article')
+
+        var tmp;
+        if(article in array)
+          tmp=array[article];
+        else
+          tmp={};
+
+        //Ajout de l'option dans l'array spécifique
+        if(idObjet in tmp)
+          tmp[idObjet]++;
+        else
+          tmp[idObjet]=1;
+        array[article]=tmp;
+
+        //Ajout dans le tableau
+        addArticle($(this).attr('produit'),$(this).attr('price'));
+
+      });
+
+
       //Clic sur reset==> Reset du panier
       $(document).on("click", "#reset", function(){
         resetPanier();
@@ -122,6 +147,8 @@
         //Simplification: On récupère le prix et l'article, on envoie tout ça à la fonction qui se charge d'ajouter.
         var id=$(this).attr('id');
         var price=$(this).attr('price');
+        //Ajout dans la liste.
+        addTab($(this).attr('article'));
         addArticle(id,price);
       });
 
@@ -154,7 +181,7 @@
         $.ajax({
           type: "GET",
           dataType: "json",
-          url: "alreadyhere.php?nom="+name+"&emplacement="+emplacement,
+          url: "isInDb.php?nom="+name+"&emplacement="+emplacement,
           success: function(data) {
             $("#valider").html(oldBtn).attr('disabled', false);
             var verif=data["value"];
@@ -175,61 +202,26 @@
         });
        
         function doYourBusiness(name, emplacement) {
-          var bag="0"; var trad="0"; var cro="0"; var pac="0"; var ptd="0"; var duchesse="0";
-       
-          var table = document.getElementById("paniert");
-          // Récupérer les valeurs dans le tableau 
-          for(var i=1; i<$('#paniert tr').length;i++){
-            var tmp =table.rows[i].cells[1].innerHTML;
-            switch(tmp) {
-              case "Baguette":
-                  bag=table.rows[i].cells[0].innerHTML;
-                  break;
-              
-              case "Tradition":
-                  trad=table.rows[i].cells[0].innerHTML;
-                  break;
+          array["name"]=name;
+          array["pitch"]=emplacement;
 
-              case "Duchesse":
-                  duchesse=table.rows[i].cells[0].innerHTML;
-                  break;
-              
-              case "Croissant":
-                  cro=table.rows[i].cells[0].innerHTML;
-                  break;
-              
-              case "Pain au Chocolat":
-                  pac=table.rows[i].cells[0].innerHTML;
-                  break;
-       
-              case "Petit Déjeuner":
-                  ptd=table.rows[i].cells[0].innerHTML;
-                  break;
+          $.ajax({        
+            type: "POST",
+            url: "addOrder.php",
+            data: { 'parameters' : array},
+            success: function(html){
+              alert(html);
+              $('#validation').show();
+              $('#validation').delay(5000).fadeOut(1000);
+              resetPanier();
+            },
+            error: function(html){
+              alert(html);
             }
-          }
-          bag=parseInt(bag)+parseInt(Math.floor((bagptd+1)/3));
-          cro=parseInt(cro)+parseInt(croissantptd);
-          pac=parseInt(pac)+parseInt(pacptd);
-          $.ajax({
-              url: "add.php?nom="+name+"&emplacement="+emplacement+"&baguette="+bag+"&tradition="+trad+"&duchesse="+duchesse+"&croissant="+cro+"&pac="+pac+"&petitdej="+ptd, // Le nom du fichier indiqué dans le formulaire
-              success: function(html) { // Je récupère la réponse du fichier PHP
-                //alert(html);
-                $('#validation').show();
-                $('#validation').delay(5000).fadeOut(1000);
-                resetPanier();
-                bagptd=0;
-                croissantptd=0;
-                pacptd=0;
-              },
-              error: function(html){
-                alert(html);
-              }
-          });
+          }); 
         }
 
     });
-
-
         </script>
   </head>
 
@@ -344,39 +336,49 @@ mysql_select_db('pain',$db);
         </div>
 
         <div class="col-md-9">
-          <div class="btn-group-vertical article clic-article" role="group"  aria-label="..." width="30%" price="1.00" id="Baguette">
-            <input type="image" src="img/baguette-blanche.jpg"  class="btn btn-default">
-            <button type="button" class="btn btn-article">Baguette 1 €</button>
-          </div>
-          <div class="btn-group-vertical article clic-article" role="group"  aria-label="..." width="30%" price="1.35" id="Tradition">
-            <input type="image"  src="img/pain-tradition.jpg"  class="btn btn-default">
-            <button type="button" class="btn btn-article">Tradition 1,35 €</button>
-          </div>
-          <div class="btn-group-vertical article clic-article" role="group"  aria-label="..." width="30%" price="1.5" id="Duchesse">
-            <input type="image"  src="img/S7929a_28218a.jpg"  class="btn btn-default">
-            <button type="button" class="btn btn-article">Duchesse 1,5 €</button>
-          </div>
-          <div class="btn-group-vertical article" role="group"  aria-label="..." width="30%" >
-            <div id="confirmBox">
-              <div class="message">Que désirez vous avec votre petit déjeuner?</div>
-              <span class="button croissantV">Croissant</span>
-              <span class="button pacV">Pain au Chocolat</span>
-              <span class="button cancel">Annuler</span>
-            </div> 
-            <div class="btn-group-vertical petitdej" price="7.00" id="Petit Déjeuner">
-              <input type="image" src="img/petit-dejeuner-français.jpg" class="btn btn-default">
-              <button type="button" class="btn btn-article">Petit Déjeuner sur place 7 €</button>
-            </div>
-          </div>
-           
-          <div class="btn-group-vertical article clic-article" role="group"  aria-label="..." width="30%" price="0.80" id="Pain au Chocolat">
-            <input type="image" src="img/painauchocolat.png" class="btn btn-default">
-            <button type="button" class="btn btn-article">Pain au Chocolat 0,80 €</button>
-          </div>
-          <div class="btn-group-vertical article clic-article" role="group"  aria-label="..." width="30%" price="0.80" id="Croissant">
-            <input type="image" src="img/52358-11.png" class="btn btn-default">
-            <button type="button" class="btn btn-article">Croissant 0,80 €</button>
-          </div>
+          <?php
+            $sql = 'SELECT listorder, nom, oa.article AS article, prix, img, quantity, stock, objet FROM article a INNER JOIN objetsInArticle oa on a.id=oa.article INNER JOIN objet o on o.id=oa.objet WHERE actif=1 ORDER BY listorder, quantity;'; 
+            $req = mysql_query($sql) or die('Erreur SQL !<br>'.$sql.'<br>'.mysql_error()); 
+
+            while($data = mysql_fetch_assoc($req)){
+              //Ici on gère le cas spécial de produits multiples.
+              if($data['quantity']==-1){
+                echo '<div class="btn-group-vertical article" role="group"  aria-label="..." width="30%" >';
+                echo '<div id="confirmBox">';
+                echo '<div class="message">Que désirez vous avec votre '.$data['nom'].'?</div>';
+                echo '<span class="button option" produit="'.$data['nom'].'" article="'.$data['article'].'" price="'.$data['prix'].'" value="'.$data['objet'].'">'.$data['objet'].'</span>';
+                
+                //Tricky part, had to check choices available for this one BEFORE closing everything...
+                $dataminus1=$data;
+                while($data = mysql_fetch_assoc($req)){
+                  if($dataminus1['nom']==$data['nom'] && $data['quantity']==-1){
+                    echo '<span class="button option" produit="'.$data['nom'].'" article="'.$data['article'].'" price="'.$data['prix'].'" value="'.$data['objet'].'">'.$data['objet'].'</span>';
+                  }
+                  else if($dataminus1['nom']==$data['nom'] && $data['quantity']!=-1){
+                    $data = mysql_fetch_assoc($req);
+                    break;
+                  }
+                  else
+                    break;
+                }
+                echo '<span class="button cancel">Annuler</span></div>';
+                echo '<div class="btn-group-vertical petitdej" price="'.$dataminus1['prix'].'" article="'.$data['article'].'" id="'.$dataminus1['nom'].'">';
+                echo '<input type="image" src="img/'.$dataminus1['img'].'"  class="btn btn-default">';
+                echo '<button type="button" class="btn btn-article">'.$dataminus1['nom'].' '.$dataminus1['prix'].' €</button>';
+                echo '</div>';
+                echo '</div>';
+
+              }
+
+
+              echo '<div class="btn-group-vertical article clic-article" role="group"  aria-label="..." width="30%" price="'.$data['prix'].'" article="'.$data['article'].'" id="'.$data['nom'].'">';
+              echo '<input type="image" src="img/'.$data['img'].'"  class="btn btn-default">';
+              echo '<button type="button" class="btn btn-article">'.$data['nom'].' '.$data['prix'].' €</button>';
+              echo '</div>';
+
+            }
+
+          ?>
         </div>
       </div>
       <!-- div test -->

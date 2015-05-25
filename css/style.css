@@ -21,6 +21,7 @@ body{
 }
 
 .article{
+    margin-left: 3px;
 	width: 30%;
 }
 
@@ -76,4 +77,19 @@ pre{
 {
     text-align: left;
     margin-bottom: 8px;
+}
+
+.labelobjet{
+    width: 40%
+}
+
+.thumbadmin{
+    width: 122px;
+    padding: 0;
+    margin-bottom: 0;
+
+}
+
+.labellink{
+    width: 30%;
 }
