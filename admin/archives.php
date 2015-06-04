@@ -23,7 +23,7 @@
 
                   url: 'taken.php?id='+$(this).attr('value'), // Le nom du fichier indiqué dans le formulaire
                   success: function(html) { // Je récupère la réponse du fichier PHP
-                    $("#insert").load("sho.php?date="+$('#dateaffiche').val()+" #content");
+                    $("#insert").load("archives.php?date="+$('#dateaffiche').val()+" #content");
                   },
                   error: function(html){
                     alert(html);
@@ -37,7 +37,7 @@
 
                   url: 'untaken.php?id='+$(this).attr('value'), // Le nom du fichier indiqué dans le formulaire
                   success: function(html) { // Je récupère la réponse du fichier PHP
-                    $("#insert").load("sho.php?date="+$('#dateaffiche').val()+" #content");
+                    $("#insert").load("archives.php?date="+$('#dateaffiche').val()+" #content");
                   },
                   error: function(html){
                     alert(html);
@@ -46,7 +46,7 @@
         });
 
         $('#dateaffiche').change(function(){
-          $("#insert").load("sho.php?date="+$(this).val()+" #content");
+          $("#insert").load("archives.php?date="+$(this).val()+" #content");
         });
 
     });
@@ -58,7 +58,7 @@
 <?php
 
 if(isset($_GET['date']))      $today=$_GET['date'];
-else      $today=date("Y-m-d");//,strtotime(date("y-m-d") . "+1 days"));
+else      $today=date('Y-m-d',strtotime(date("y-m-d")  . "+1 days"));//,strtotime(date("y-m-d") . "+1 days"));
 
 // on se connecte à MySQL 
 include('../secure/config.php');
@@ -70,29 +70,9 @@ $objets=array();
 
 
   <body role="document">
-
-    <!-- Fixed navbar -->
-    <nav class="navbar navbar-inverse navbar-fixed-top">
-      <div class="container">
-        <div class="navbar-header">
-          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-            <span class="sr-only">Toggle navigation</span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button>
-          <a class="navbar-brand" href="index.php">Commande Pain</a>
-        </div>
-        <div id="navbar" class="navbar-collapse collapse">
-          <ul class="nav navbar-nav">
-            <li><a href="index.php">Admin</a></li>
-            <li class="active"><a href="show.php">Commandes du jour</a></li>
-            <li><a href="delete.php">Suppression</a></li>
-            <li><a href="cook.php">Stocks</a></li>
-          </ul>
-        </div><!--/.nav-collapse -->
-      </div>
-    </nav>
+    <?php
+      include('header.php');
+    ?>
 
     <div class="container theme-showcase" role="main">
       <div class="row">
@@ -112,7 +92,6 @@ $objets=array();
               $njour = date('d');
               $jour = datedayfr(date('y-m-d'));
               $mois = datemonthfr(date('Y-m-d'));
-              echo "<option value='".date("Y-m-d")."'> $jour $njour $mois";
 
               $req = mysqli_query($bdd,'SELECT DISTINCT date FROM orders ORDER BY date DESC;') or die('Erreur SQL !<br>'.mysql_error()); 
 
@@ -172,7 +151,7 @@ $objets=array();
                   $tab[$data['numorder']][$data['choice']]=$data['quantity'];
               }
               //On récup aussi le total des commandes:
-              $req = mysqli_query($bdd,'SELECT numorder,sum(prix) as total FROM orders o INNER JOIN ordercontent oc on oc.numorder=o.id INNER JOIN article a on a.id=oc.article WHERE date="'.$today.'" AND deleted=0 GROUP BY numorder ORDER BY name;') or die('Erreur SQL !'.mysql_error()); 
+              $req = mysqli_query($bdd,'SELECT numorder,sum(quantity*prix) as total FROM orders o INNER JOIN ordercontent oc on oc.numorder=o.id INNER JOIN article a on a.id=oc.article WHERE date="'.$today.'" AND deleted=0 GROUP BY numorder ORDER BY name;') or die('Erreur SQL !'.mysql_error()); 
               while($data = mysqli_fetch_assoc($req)){
                 $tab[$data['numorder']]['total']=$data['total'];
               }
@@ -198,10 +177,27 @@ $objets=array();
                 echo '</tr>';
 
               }
-
-              //Faire ici la requête du total.
               echo '</tr>';
-            
+
+              //REQUETE DE LA MORT QUI TUE
+              $req = mysqli_query($bdd,'select sum(qty) as total, nom FROM (
+                                          SELECT sum(quantity) as qty, choice as nom FROM orders o INNER JOIN ordercontent oc on oc.numorder=o.id INNER JOIN objet obj on obj.id=oc.choice WHERE date="'.$today.'" GROUP BY name,pitch,choice
+                                          UNION ALL
+                                          SELECT sum(quantity) as qty, nom FROM orders o INNER JOIN ordercontent oc on oc.numorder=o.id INNER JOIN article a on a.id=oc.article WHERE date="'.$today.'" AND deleted=0 GROUP BY nom
+                                        ) s GROUP BY nom;') or die('Erreur SQL !'.mysql_error()); 
+
+              while($data = mysqli_fetch_assoc($req)){
+                $tab['total'][$data['nom']]=$data['total'];
+              }
+              echo '<tr><td></td><td></td><th>Total:</th>';
+              foreach ($objet as $obj) {
+                if(array_key_exists ($obj , $tab['total']))
+                  echo '<td>'.$tab['total'][$obj].'</td>';
+                else
+                  echo '<td>0</td>';
+              }
+              echo '<td></td></tr>';
+
 
               mysqli_close($bdd); 
               ?>

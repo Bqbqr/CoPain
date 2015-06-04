@@ -19,10 +19,10 @@
         $(document).on("click", ".undel", function(){
             //On recup le nom du bouton ie le numéro de la commande
             if (confirm("Annuler la suppression pour "+$(this).attr('value')+"?")) { 
-              var $commandeASuppr=$(this).attr('name');
+              var $commandeASuppr=$(this).attr('value');
               $.ajax({
 
-                  url: 'undel.php?id='+$commandeASuppr, // Le nom du fichier indiqué dans le formulaire
+                  url: 'del.php?value=0&id='+$commandeASuppr, // Le nom du fichier indiqué dans le formulaire
                   success: function(html) { // Je récupère la réponse du fichier PHP
                     $("#insert").load("delete.php #content");
                   },
@@ -36,10 +36,10 @@
         $(document).on("click", ".del", function(){
             //On recup le nom du bouton ie le numéro de la commande
             if (confirm("Supprimer la commande pour "+$(this).attr('value')+"?")) { 
-              var $commandeASuppr=$(this).attr('name');
+              var $commandeASuppr=$(this).attr('value');
               $.ajax({
 
-                  url: 'del.php?id='+$commandeASuppr, // Le nom du fichier indiqué dans le formulaire
+                  url: 'del.php?value=1&id='+$commandeASuppr, // Le nom du fichier indiqué dans le formulaire
                   success: function(html) { // Je récupère la réponse du fichier PHP
                     $("#insert").load("delete.php #content");
                   },
@@ -57,45 +57,21 @@
   </head>
 
 <?php
-include('utils.php');
-
-$today = date('Y-m-d',strtotime(date("Y-m-d") . "+1 days"));
-$day=
-
 // on se connecte à MySQL 
 include('../secure/config.php');
-$db=mysql_connect($SQLhost, $SQLlogin, $SQLpass) or die(mysql_error());
+$bdd=mysqli_connect($SQLhost, $SQLlogin, $SQLpass, $SQLdb) or die(mysql_error());
 
-// on sélectionne la base 
-mysql_select_db('pain',$db); 
+$today = date('Y-m-d',strtotime(date("Y-m-d") . "+1 days"));
+$tab=array(array());
 
 ?> 
 
 
   <body role="document">
 
-    <!-- Fixed navbar -->
-    <nav class="navbar navbar-inverse navbar-fixed-top">
-      <div class="container">
-        <div class="navbar-header">
-          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-            <span class="sr-only">Toggle navigation</span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button>
-          <a class="navbar-brand">Commande Pain</a>
-        </div>
-        <div id="navbar" class="navbar-collapse collapse">
-          <ul class="nav navbar-nav">
-            <li><a href="index.php">Admin</a></li>
-            <li><a href="show.php">Commandes du jour</a></li>
-            <li class="active"><a href="delete.php">Suppression</a></li>
-            <li><a href="cook.php">Stocks</a></li>
-          </ul>
-        </div><!--/.nav-collapse -->
-      </div>
-    </nav>
+    <?php
+      include('header.php');
+    ?>
 
     <div class="container theme-showcase" role="main">    
       <div id="insert" class="row">
@@ -106,47 +82,70 @@ mysql_select_db('pain',$db);
               <tr>
                 <th>Nom</th>
                 <th>Emplacement</th>
-                <th>Baguettes</th>
-                <th>Traditions</th>
-                <th>Duchesses</th>
-                <th>Croissant</th>
-                <th>Pain au Chocolat</th>
-                <th>Petit Déjeuner</th>
-                <th></th>
+                <?php
+                  $result= mysqli_query($bdd,"SELECT nom FROM article WHERE actif=1 ORDER BY listorder;") or die(mysqli_error($bdd));
+                  $i=0;
+                  while($data=mysqli_fetch_assoc($result)){  
+                    $objet[$i++]=$data['nom'];
+                    echo '<th>'.$data['nom'].'</th>';
+                  }
+                ?>
+                <th>Supprimé</th>
               </tr>
             </thead>
             <tbody>
               <?php 
-              // on crée la requête SQL 
+              // On récupère tous les articles normaux. Sans les options
+              $req = mysqli_query($bdd,'SELECT numorder,name,pitch,nom,taken,deleted,sum(quantity) as quantity FROM orders o INNER JOIN ordercontent oc on oc.numorder=o.id INNER JOIN article a on a.id=oc.article WHERE date=CURDATE()+1 GROUP BY nom,pitch ORDER BY name;') or die('Erreur SQL !'.mysql_error()); 
 
-              $sql = 'SELECT nomclient, emplacement, baguette, tradition, croissant, pac, duchesse, petitdejeuner,id,deleted,recuperee FROM commande WHERE datestamp="'.$today.'" ORDER BY deleted,nomclient;'; 
-              //echo $sql;
-              // on envoie la requête 
-              $req = mysql_query($sql) or die('Erreur SQL !<br>'.$sql.'<br>'.mysql_error()); 
+              // remplit notre tableau
+              while($data = mysqli_fetch_assoc($req)){
+                $tab[$data['numorder']][$data['nom']]=$data['quantity'];
+                $tab[$data['numorder']]['pitch']=$data['pitch'];
+                $tab[$data['numorder']]['name']=$data['name'];
+                $tab[$data['numorder']]['taken']=$data['taken'];
+                $tab[$data['numorder']]['order']=$data['numorder'];
+                $tab[$data['numorder']]['deleted']=$data['deleted'];
+              }
 
-              // on fait une boucle qui va faire un tour pour chaque enregistrement 
-              while($data = mysql_fetch_assoc($req)) 
-                  {
-                  $deleted=$data['deleted'];
+              //Et là on récupère nos options. on actualise le tableau ensuite.
+              $req = mysqli_query($bdd,'SELECT numorder,name,pitch, sum(quantity) as quantity, choice FROM orders o INNER JOIN ordercontent oc on oc.numorder=o.id INNER JOIN objet obj on obj.id=oc.choice WHERE date=CURDATE()+1 GROUP BY name,pitch,choice;') or die('Erreur SQL !'.mysql_error()); 
+              while($data = mysqli_fetch_assoc($req)){
+                if(array_key_exists($data['choice'], $tab[$data['numorder']]))
+                  $tab[$data['numorder']][$data['choice']]+=$data['quantity'];
+                else
+                  $tab[$data['numorder']][$data['choice']]=$data['quantity'];
+              }
+              //On récup aussi le total des commandes:
+              $req = mysqli_query($bdd,'SELECT numorder,sum(quantity*prix) as total FROM orders o INNER JOIN ordercontent oc on oc.numorder=o.id INNER JOIN article a on a.id=oc.article WHERE date=CURDATE()+1 GROUP BY numorder ORDER BY name;') or die('Erreur SQL !'.mysql_error()); 
+              while($data = mysqli_fetch_assoc($req)){
+                $tab[$data['numorder']]['total']=$data['total'];
+              }
 
-                  echo '<td>'.$data['nomclient'].'</td>';
-                  echo '<td>'.$data['emplacement'].'</td>';
-                  echo '<td>'.$data['baguette'].'</td>';
-                  echo '<td>'.$data['tradition'].'</td>';
-                  echo '<td>'.$data['duchesse'].'</td>';
-                  echo '<td>'.$data['croissant'].'</td>';
-                  echo '<td>'.$data['pac'].'</td>';
-                  echo '<td>'.$data['petitdejeuner'].'</td>';
-                  if($deleted==1){
-                    echo '<td style = "1"><button value="'.$data['nomclient'].'" name="'.$data['id'].'" type="button" class="btn btn-info undel" aria-label="Right Align">Annuler Suppression</button></td></tr>';
-                    echo '</del>';
-                  }
-                  else
-                    echo '<td><button value="'.$data['nomclient'].'" name="'.$data['id'].'" type="button" class="btn btn-warning del" aria-label="Right Align">Supprimer Commande</button></td></tr>';
-                  
+              foreach ($tab as $name => $data) {
+                if ($name=="0") {
+                  continue;
                 }
-              // on ferme la connexion à mysql 
-              mysql_close(); 
+                echo '<tr>';
+                echo '<td>'.$data['name'].'</td>';
+                echo '<td>'.$data['pitch'].'</td>';
+                foreach ($objet as $obj) {
+                  if(array_key_exists ($obj , $data))
+                    echo '<td>'.$data[$obj].'</td>';
+                  else
+                    echo '<td>0</td>';
+                }
+                echo '<td>'.$data['total'].' €</td>';
+                if($data['deleted']==1){
+                  echo '<td style = "1"><button value="'.$data['order'].'" type="button" class="btn btn-info undel" aria-label="Right Align">Annuler Suppression</button></td></tr>';
+                }
+                else
+                  echo '<td><button value="'.$data['order'].'" type="button" class="btn btn-warning del" aria-label="Right Align">Supprimer Commande</button></td></tr>';
+
+              }
+              echo '</tr>';
+
+              mysqli_close($bdd); 
               ?>
               
             </tbody>

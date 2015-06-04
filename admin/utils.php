@@ -35,4 +35,12 @@ function datemonthfr($date){
 	 }
 	 return $month;
 }
+function date_fr()
+  {
+  $Jour = array("Dimanche", "Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi","Samedi");
+  $Mois = array("Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre");
+  return $Jour[date("w")]." ".date("d")." ".$Mois[date("n")];
+  }
+  
 ?>
+

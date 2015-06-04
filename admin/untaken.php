@@ -13,7 +13,7 @@ $db=mysql_connect($SQLhost, $SQLlogin, $SQLpass) or die(mysql_error());
 mysql_select_db('pain',$db)  or die('Erreur de selection '.mysql_error()); 
  
 // on écrit la requête sql 
-$sql = "UPDATE commande SET recuperee='0' WHERE id =".$id; 
+$sql = "UPDATE orders SET taken='0' WHERE id =".$id; 
 
 // on insère les informations du formulaire dans la table 
 mysql_query($sql) or die('Erreur SQL !'.$sql.'<br>'.mysql_error()); 
