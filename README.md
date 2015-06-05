@@ -3,6 +3,8 @@ Précommande de pain en ligne
 
 Version actuelle 0.9
 
+Toute personne intérressée peut me contacter pour que je le modèle de la bdd.
+
 Ce site web permet à l'utilisateur de commander son pain sur la page principale (index.html)
 Une fois commandé, le "gérant" peut afficher les commandes du jour (donc celles passés la veille)
 et gérer celle du lendemain. Il est aussi possible pour lui de noter une commande comme "récupérée"
