@@ -70,7 +70,7 @@
             cell1.innerHTML="1";
             cell2.innerHTML=id;
             cell3.innerHTML=price;
-            cell4.innerHTML='<button type="button" object="'+object+'" value="'+id+'"class="btn btn-xs cancel"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button>';
+            cell4.innerHTML='<button type="button" object="'+object+'" value="'+id+'"class="btn btn-xs cancel"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button>';
 
           }
           var sum=0.0;
