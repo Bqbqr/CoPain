@@ -41,7 +41,7 @@
       }
 
       //Fonction d'ajout d'article
-      function addArticle(id, price){
+      function addArticle(id, price, object){
         //On récupère la table
           var table = document.getElementById("paniert");
           var row = -1;
@@ -65,10 +65,12 @@
             var cell1 = row.insertCell(0);
             var cell2 = row.insertCell(1);
             var cell3 = row.insertCell(2);
+            var cell4 = row.insertCell(3);
 
             cell1.innerHTML="1";
             cell2.innerHTML=id;
             cell3.innerHTML=price;
+            cell4.innerHTML='<button type="button" object="'+object+'" value="'+id+'"class="btn btn-xs cancel"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button>';
 
           }
           var sum=0.0;
@@ -99,7 +101,22 @@
         document.getElementById("emplacement").value="";
       }
 
+      $(document).on("click", ".cancel", function(){
+        var id=$(this).attr('value');
+        var key=$(this).attr('object');
+        //On récupère la table
+        var table = document.getElementById("paniert");
+        var row = -1;
+        //On cherche dans la table si ça existe déja
+        for(var i=0; i<$('#paniert tr').length;i++){
+          var tmp=table.rows[i].cells[1].innerHTML;
+          if (tmp.toString().indexOf(id) > '-1')
+            row=i;
+        }
+        array[key]=0;
+        table.deleteRow(row);
 
+      });
 
       $(document).on("click", ".petitdej", function(){
         var id=$(this).attr('id');
@@ -128,7 +145,7 @@
         array[article]=tmp;
 
         //Ajout dans le tableau
-        addArticle($(this).attr('produit'),$(this).attr('price'));
+        addArticle($(this).attr('produit'),$(this).attr('price'),article);
 
       });
 
@@ -145,7 +162,7 @@
         var price=$(this).attr('price');
         //Ajout dans la liste.
         addTab($(this).attr('article'));
-        addArticle(id,price);
+        addArticle(id,price,$(this).attr('article'));
       });
 
 
@@ -239,9 +256,24 @@ mysql_select_db('pain',$db);
 
   <body role="document">
 
-    <?php
-      include('header.php');
-    ?>
+  <!-- Fixed navbar -->
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a href="index.php" class="navbar-brand">Commande Pain</a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+    </nav>
 
     <div class="container theme-showcase" role="main">
     <h2>Commande de pain - Bread Order</h2>
@@ -299,6 +331,7 @@ mysql_select_db('pain',$db);
                     <th>Qté</th>
                     <th>Nom</th>
                     <th>Prix</th>
+                    <th></th>
                   </tr>
                 </thead>
             </table>
