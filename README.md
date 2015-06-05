@@ -8,6 +8,11 @@ Une fois commandé, le "gérant" peut afficher les commandes du jour (donc celle
 et gérer celle du lendemain. Il est aussi possible pour lui de noter une commande comme "récupérée"
 afin d'avoir un suivi de ce qu'il reste à vendre.
 
+à venir:
+Gestion des stocks
+Modification du panier via + et -
+Gestion des doublons via popup
+Statistiques
 
 # Administration:
 
