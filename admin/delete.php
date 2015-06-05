@@ -59,9 +59,10 @@
 <?php
 // on se connecte à MySQL 
 include('../secure/config.php');
+include('utils.php');
 $bdd=mysqli_connect($SQLhost, $SQLlogin, $SQLpass, $SQLdb) or die(mysql_error());
 
-$today = date('Y-m-d',strtotime(date("Y-m-d") . "+1 days"));
+$today = date('d-m-Y',strtotime(date("Y-m-d") . "+1 days"));
 $tab=array(array());
 
 ?> 
@@ -76,7 +77,7 @@ $tab=array(array());
     <div class="container theme-showcase" role="main">    
       <div id="insert" class="row">
         <div id="content" class="col-md-12">
-          <h2> Suppression des commandes pour le <?php echo "$today"; ?> </h2>
+          <h2> Suppression des commandes pour le <?php echo $today; ?> </h2>
           <table id="main" class="table table-striped">
             <thead>
               <tr>
