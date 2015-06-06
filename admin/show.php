@@ -23,7 +23,7 @@
 
                   url: 'taken.php?id='+$(this).attr('value'), // Le nom du fichier indiqué dans le formulaire
                   success: function(html) { // Je récupère la réponse du fichier PHP
-                    $("#insert").load("sho.php?date="+$('#dateaffiche').val()+" #content");
+                    $("#insert").load("show.php?date="+$('#dateaffiche').val()+" #content");
                   },
                   error: function(html){
                     alert(html);
@@ -37,7 +37,7 @@
 
                   url: 'untaken.php?id='+$(this).attr('value'), // Le nom du fichier indiqué dans le formulaire
                   success: function(html) { // Je récupère la réponse du fichier PHP
-                    $("#insert").load("sho.php?date="+$('#dateaffiche').val()+" #content");
+                    $("#insert").load("show.php?date="+$('#dateaffiche').val()+" #content");
                   },
                   error: function(html){
                     alert(html);
