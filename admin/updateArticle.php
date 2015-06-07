@@ -13,6 +13,9 @@ else      $articleImg="";
 if(isset($_GET['id']))      $id=$_GET['id'];
 else      $id="";
 
+if(isset($_GET['articleO']))      $articleO=$_GET['articleO'];
+else      $articleO="";
+
 if(isset($_GET['active']))      $active=$_GET['active'];
 else      $active="";
 
@@ -24,7 +27,7 @@ $db=mysql_connect($SQLhost, $SQLlogin, $SQLpass) or die(mysql_error());
 mysql_select_db('pain',$db)  or die('Erreur de selection '.mysql_error()); 
  
 // on écrit la requête sql 
-$sql = "UPDATE article SET nom='$articleN', prix='$articleP', img='$articleImg', actif='$active' WHERE id='$id'"; 
+$sql = "UPDATE article SET nom='$articleN', prix='$articleP', img='$articleImg', actif='$active',listorder='$articleO' WHERE id='$id'"; 
 
 // on insère les informations du formulaire dans la table 
 mysql_query($sql) or die('Erreur SQL !'.$sql.'<br>'.mysql_error()); 

@@ -122,6 +122,7 @@
           var articleN=$("#"+id+"name").val();
           var articleP=$("#"+id+"p").val();
           var articleImg=$("#"+id+"img").val();
+          var articleOrder=$("#"+id+"o").val();
           var active;
           if(document.getElementById(id+"box").checked)
             active="1";
@@ -130,7 +131,7 @@
 
           $.ajax({
             type: "GET",
-            url: "updateArticle.php?id="+id+"&active="+active+"&articleN="+articleN+"&articleImg="+articleImg+"&articleP="+articleP,
+            url: "updateArticle.php?id="+id+"&active="+active+"&articleN="+articleN+"&articleImg="+articleImg+"&articleP="+articleP+"&articleO="+articleOrder,
             success: function(html) {
               $("#main_container").load("index.php #main_choices");
               //alert(html);
@@ -266,7 +267,7 @@ mysql_select_db('pain',$db);
             <span class="label label-info">N'oubliez pas d'ajouter des objets à vos articles!</span></br>
 
             <?php 
-              $sql = 'SELECT id,nom,prix,img,actif FROM article;'; 
+              $sql = 'SELECT id,nom,prix,img,actif,listorder FROM article ORDER BY listorder;'; 
               $req = mysql_query($sql) or die('Erreur SQL !<br>'.$sql.'<br>'.mysql_error()); 
 
               // on fait une boucle qui va faire un tour pour chaque enregistrement 
@@ -281,8 +282,11 @@ mysql_select_db('pain',$db);
                 echo '<span class="input-group-addon" id="sizing-addon2"><a img" class="thumbnail thumbadmin"><img src="../img/'.$data['img'].'" alt="'.$data['nom'].'"></a></span>';
                 echo '<input type="text" id="'.$tmp.'name" class="form-control" value="'.$data['nom'].'" aria-describedby="sizing-addon2">';
                 echo '<input type="text" id="'.$tmp.'img" class="form-control" value="'.$data['img'].'"><div class="input-group">';
+                echo '<span class="input-group-addon" id="basic-addon2">Prix:</span>';
+                echo '<span class="input-group-addon" id="basic-addon2">€</span>';
                 echo '<input type="text" id="'.$tmp.'p" class="form-control" value="'.$data['prix'].'" aria-describedby="sizing-addon2">';
-                echo '<span class="input-group-addon" id="basic-addon2">€</span></div>';
+                echo '<span class="input-group-addon" id="basic-addon2">Ordre:</span>';
+                echo '<input type="text" id="'.$tmp.'o" class="form-control" value="'.$data['listorder'].'" aria-describedby="sizing-addon2"></div>';
                 echo '<button field="'.$tmp.'" class="btn btn-default maj" type="button">Mettre à jour</button>';
                 echo '</div><p></p>';
                 }
