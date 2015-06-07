@@ -18,4 +18,4 @@ Statistiques
 
 # Administration:
 
-à documenter une fois complétée
+// TODO
