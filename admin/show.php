@@ -22,7 +22,7 @@
               $.ajax({
 
                   url: 'taken.php?id='+$(this).attr('value'), // Le nom du fichier indiqué dans le formulaire
-                  success: function(html) { // Je récupère la réponse du fichier PHP
+                  success: function(html) {
                     $("#insert").load("show.php?date="+$('#dateaffiche').val()+" #content");
                   },
                   error: function(html){
@@ -36,7 +36,7 @@
               $.ajax({
 
                   url: 'untaken.php?id='+$(this).attr('value'), // Le nom du fichier indiqué dans le formulaire
-                  success: function(html) { // Je récupère la réponse du fichier PHP
+                  success: function(html) {
                     $("#insert").load("show.php?date="+$('#dateaffiche').val()+" #content");
                   },
                   error: function(html){
