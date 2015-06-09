@@ -199,7 +199,22 @@
             success: function(data) {
               $("#valider").html(oldBtn).attr('disabled', false);
               var verif=data["value"];
-              if(verif!="true"){
+              if(verif=="double"){
+                var ask;
+                ask="Une commande pour "+name+" existe déjà:\n"
+                for (var k in data){
+                    if (data.hasOwnProperty(k) && k!="value" && k!="numorder") {
+                      ask=ask+data[k]+" "+k+"\n";
+                    }
+                }
+                ask=ask+"Voulez vous remplacer cette commande?";
+                if (!confirm(ask)) {
+                  return;   
+                }else{
+                  deleteOrder(data["numorder"]);
+                }
+              }
+              else if(verif!="true"){
                 if (!confirm("Doublon pour "+verif+" ! Commander quand même? "+verif+" as already done an order, add it anyway?")) {
                   return;   
                 }
@@ -214,6 +229,19 @@
 
         
         });
+
+        //Suppression d'une commande
+        function deleteOrder(id) {
+          $.ajax({
+            url: 'admin/del.php?value=1&id='+id, // Le nom du fichier indiqué dans le formulaire
+            success: function(html) { // Je récupère la réponse du fichier PHP
+              //Nothing
+            },
+            error: function(html){
+              alert(html);
+            }
+          });
+        }
        
         //Fonction requête pour ajouter une fonction.
         function doYourBusiness(name, emplacement) {

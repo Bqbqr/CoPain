@@ -97,7 +97,7 @@ $tab=array(array());
             <tbody>
               <?php 
               // On récupère tous les articles normaux. Sans les options
-              $req = mysqli_query($bdd,'SELECT numorder,name,pitch,nom,taken,deleted,sum(quantity) as quantity FROM orders o INNER JOIN ordercontent oc on oc.numorder=o.id INNER JOIN article a on a.id=oc.article WHERE date=CURDATE()+1 GROUP BY nom,pitch ORDER BY name;') or die('Erreur SQL !'.mysql_error()); 
+              $req = mysqli_query($bdd,'SELECT numorder,name,pitch,nom,taken,deleted,sum(quantity) as quantity FROM orders o INNER JOIN ordercontent oc on oc.numorder=o.id INNER JOIN article a on a.id=oc.article WHERE date=CURDATE()+1 GROUP BY nom,numorder ORDER BY name;') or die('Erreur SQL !'.mysql_error()); 
 
               // remplit notre tableau
               while($data = mysqli_fetch_assoc($req)){
@@ -110,7 +110,7 @@ $tab=array(array());
               }
 
               //Et là on récupère nos options. on actualise le tableau ensuite.
-              $req = mysqli_query($bdd,'SELECT numorder,name,pitch, sum(quantity) as quantity, choice FROM orders o INNER JOIN ordercontent oc on oc.numorder=o.id INNER JOIN objet obj on obj.id=oc.choice WHERE date=CURDATE()+1 GROUP BY name,pitch,choice;') or die('Erreur SQL !'.mysql_error()); 
+              $req = mysqli_query($bdd,'SELECT numorder,name,pitch, sum(quantity) as quantity, choice FROM orders o INNER JOIN ordercontent oc on oc.numorder=o.id INNER JOIN objet obj on obj.id=oc.choice WHERE date=CURDATE()+1 GROUP BY name,numorder,choice;') or die('Erreur SQL !'.mysql_error()); 
               while($data = mysqli_fetch_assoc($req)){
                 if(array_key_exists($data['choice'], $tab[$data['numorder']]))
                   $tab[$data['numorder']][$data['choice']]+=$data['quantity'];

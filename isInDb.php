@@ -9,28 +9,44 @@ else      $emplacement="";
 
 // on se connecte à MySQL 
 include('secure/config.php');
-$db=mysql_connect($SQLhost, $SQLlogin, $SQLpass) or die(mysql_error());
-
-mysql_select_db('pain',$db)  or die('Erreur de selection '.mysql_error()); 
+$return=array();
+$bdd=mysqli_connect($SQLhost, $SQLlogin, $SQLpass,$SQLdb) or die(mysql_error());
  
-// on écrit la requête sql 
+$sql= "SELECT numorder,name,pitch,nom,taken,sum(quantity) as quantity FROM orders o INNER JOIN ordercontent oc on oc.numorder=o.id INNER JOIN article a on a.id=oc.article WHERE date=CURDATE()+INTERVAL 1 DAY AND deleted=0 AND name='$nom' AND pitch='$emplacement' GROUP BY nom,pitch;";
+$req = mysqli_query($bdd,$sql) or die('Erreur SQL !'.mysql_error()); 
 
-$sql = "SELECT name, pitch FROM orders WHERE name='$nom' AND date=CURDATE()+INTERVAL 1 DAY"; 
-$req=mysql_query($sql) or die('Erreur SQL !'.$sql.'<br>'.mysql_error()); 
+//Cas où la commande existe déjà
+if (mysqli_num_rows($req) != 0) {
+	// remplit notre tableau
+	$data = mysqli_fetch_assoc($req);
+	$return["numorder"]=$data["numorder"];
+	do{
+		$return[$data['nom']]=$data['quantity'];
+	}while($data = mysqli_fetch_assoc($req));
 
-if (mysql_num_rows($req) != 0) { 
-	mysql_close();  // on ferme la connexion
+	mysqli_close($bdd);  // on ferme la connexion
+	$return["value"]="double";
+	// Useless ? $return["json"] = json_encode($return);
+  	echo json_encode($return);
+  	return;
+} 
+
+
+$req= mysqli_query($bdd,"SELECT name, pitch FROM orders WHERE name='$nom' AND date=CURDATE()+INTERVAL 1 DAY AND deleted=0") or die(mysqli_error($bdd));
+
+if (mysqli_num_rows($req) != 0) { 
+	mysqli_close($bdd);  // on ferme la connexion
 	$return["value"]=$nom;
 	$return["json"] = json_encode($return);
   	echo json_encode($return);
   	return;
 } 
 
-$sql = "SELECT name, pitch FROM orders WHERE pitch='$emplacement' AND date=CURDATE()+INTERVAL 1 DAY";  
-$req=mysql_query($sql) or die('Erreur SQL !'.$sql.'<br>'.mysql_error()); 
+$sql = "SELECT name, pitch FROM orders WHERE pitch='$emplacement' AND date=CURDATE()+INTERVAL 1 DAY AND deleted=0";  
+$req=mysqli_query($bdd,$sql) or die('Erreur SQL !'.$sql.'<br>'.mysql_error()); 
 
-if (mysql_num_rows($req) != 0) { 
-	mysql_close();  // on ferme la connexion 
+if (mysqli_num_rows($req) != 0) { 
+	mysqli_close($bdd);  // on ferme la connexion 
    	$return["value"]=$emplacement;
 	$return["json"] = json_encode($return);
   	echo json_encode($return);
@@ -39,7 +55,7 @@ if (mysql_num_rows($req) != 0) {
 
 $return["value"]="true";
 
-mysql_close();  // on ferme la connexion 
+mysqli_close($bdd);  // on ferme la connexion 
 //header('Location: index.php');
 $return["value"]="true";
 $return["json"] = json_encode($return);
