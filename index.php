@@ -43,43 +43,45 @@
       //Fonction d'ajout d'article
       function addArticle(id, price, object){
         //On récupère la table
-          var table = document.getElementById("paniert");
-          var row = -1;
-          //On cherche dans la table si ça existe déja
-          for(var i=0; i<$('#paniert tr').length;i++){
-            var tmp=table.rows[i].cells[1].innerHTML;
-            if (tmp.toString().indexOf(id) > '-1')
-              row=i;
-          }
+        var table = document.getElementById("paniert");
+        var row = -1;
 
-          //Si ça existe, on incrémente
-          if(row!='-1'){
-            table.rows[row].cells[0].innerHTML=parseInt(table.rows[row].cells[0].innerHTML)+1;
-            table.rows[row].cells[2].innerHTML=(parseFloat(table.rows[row].cells[2].innerHTML)+parseFloat(price)).toFixed(2);
-          }
-          else{
-
-            //Création d'une tr en dernier (-1) ou on modifie la ligne
-            var row = table.insertRow(row);
-
-            var cell1 = row.insertCell(0);
-            var cell2 = row.insertCell(1);
-            var cell3 = row.insertCell(2);
-            var cell4 = row.insertCell(3);
-
-            cell1.innerHTML="1";
-            cell2.innerHTML=id;
-            cell3.innerHTML=price;
-            cell4.innerHTML='<button type="button" object="'+object+'" value="'+id+'"class="btn btn-xs cancel"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button>';
-
-          }
-          var sum=0.0;
-          for(var i=1; i<$('#paniert tr').length;i++){
-            sum+=parseFloat(table.rows[i].cells[2].innerHTML);
-
-          }
-          document.getElementById("total").value=sum.toFixed(2)+" €";
+        //On cherche dans la table si ça existe déja
+        for(var i=0; i<$('#paniert tr').length;i++){
+          var tmp=table.rows[i].cells[1].innerHTML;
+          if (tmp.toString().indexOf(id) > '-1')
+            row=i;
         }
+
+        //Si ça existe, on incrémente
+        if(row!='-1'){
+          table.rows[row].cells[0].innerHTML=parseInt(table.rows[row].cells[0].innerHTML)+1;
+          table.rows[row].cells[2].innerHTML=(parseFloat(table.rows[row].cells[2].innerHTML)+parseFloat(price)).toFixed(2);
+        }
+        else{
+
+          //Création d'une tr en dernier (-1) où l'on modifie la ligne
+          var row = table.insertRow(row);
+
+          var cell1 = row.insertCell(0);
+          var cell2 = row.insertCell(1);
+          var cell3 = row.insertCell(2);
+          var cell4 = row.insertCell(3);
+
+          cell1.innerHTML="1";
+          cell2.innerHTML=id;
+          cell3.innerHTML=price;
+          //Ajout de la "corbeille" pour supprimer la dite ligne.
+          cell4.innerHTML='<button type="button" object="'+object+'" value="'+id+'"class="btn btn-xs cancel"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button>';
+
+        }
+        //Maj de la somme
+        var sum=0.0;
+        for(var i=1; i<$('#paniert tr').length;i++){
+          sum+=parseFloat(table.rows[i].cells[2].innerHTML);
+        }
+        document.getElementById("total").value=sum.toFixed(2)+" €";
+      }
 
 
       function resetPanier(){
@@ -87,9 +89,8 @@
         array={};
 
         $.ajax({
-
-              url: 'index.php', // Le nom du fichier indiqué dans le formulaire
-              success: function(html) { // Je récupère la réponse du fichier PHP
+              url: 'index.php',
+              success: function(html) {
                 $("#panierh").load("index.php #panierh");
               },
               error: function(html){
@@ -101,6 +102,7 @@
         document.getElementById("emplacement").value="";
       }
 
+      //Suppression d'une ligne
       $(document).on("click", ".cancel", function(){
         var id=$(this).attr('value');
         var key=$(this).attr('object');
@@ -116,14 +118,14 @@
         array[key]=0;
         table.deleteRow(row);
 
-      });
+      }); 
 
-      $(document).on("click", ".petitdej", function(){
+      $(document).on("click", ".optionarticle", function(){
         var id=$(this).attr('id');
         var price=$(this).attr('price');
         doConfirm("Quelle Viennoiserie?", 
           function cancel() {
-              //Nothing done.
+              //Rien, on ferme juste la fenêtre, c'est la fonction suivante qui prends le relais
           });
       });
 
@@ -190,30 +192,30 @@
         var oldBtn = $("#valider").html();
         $("#valider").html('Loading...').attr('disabled', true);
         //Verification de l'existence du nom dans la bdd:
-        // TESTING ZNE
-        $.ajax({
-          type: "GET",
-          dataType: "json",
-          url: "isInDb.php?nom="+name+"&emplacement="+emplacement,
-          success: function(data) {
-            $("#valider").html(oldBtn).attr('disabled', false);
-            var verif=data["value"];
-            if(verif!="true"){
-              if (!confirm("Doublon pour "+verif+" ! Commander quand même? "+verif+" as already done an order, add it anyway?")) {
-                return;   
+          $.ajax({
+            type: "GET",
+            dataType: "json",
+            url: "isInDb.php?nom="+name+"&emplacement="+emplacement,
+            success: function(data) {
+              $("#valider").html(oldBtn).attr('disabled', false);
+              var verif=data["value"];
+              if(verif!="true"){
+                if (!confirm("Doublon pour "+verif+" ! Commander quand même? "+verif+" as already done an order, add it anyway?")) {
+                  return;   
+                }
               }
+              doYourBusiness(name, emplacement);
+            },
+            error: function(html){
+              $("#valider").html(oldBtn).attr('disabled', false);
+              alert(html);
             }
-            doYourBusiness(name, emplacement);
-          },
-          error: function(html){
-            $("#valider").html(oldBtn).attr('disabled', false);
-            alert(html);
-          }
-        });
-        //END OF TESTING ZONE
+          });
+
         
         });
        
+        //Fonction requête pour ajouter une fonction.
         function doYourBusiness(name, emplacement) {
           array["name"]=name;
           array["pitch"]=emplacement;
@@ -349,7 +351,7 @@ mysql_select_db('pain',$db);
                     break;
                 }
                 echo '<span class="button cancel">Annuler</span></div>';
-                echo '<div class="btn-group-vertical petitdej" price="'.$dataminus1['prix'].'" article="'.$data['article'].'" id="'.$dataminus1['nom'].'">';
+                echo '<div class="btn-group-vertical optionarticle" price="'.$dataminus1['prix'].'" article="'.$data['article'].'" id="'.$dataminus1['nom'].'">';
                 echo '<input type="image" src="img/'.$dataminus1['img'].'"  class="btn btn-default">';
                 echo '<button type="button" class="btn btn-article">'.$dataminus1['nom'].' '.$dataminus1['prix'].' €</button>';
                 echo '</div>';
