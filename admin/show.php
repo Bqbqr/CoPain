@@ -10,6 +10,7 @@
 
     <link href="../css/bootstrap.min.css" rel="stylesheet">
     <link href="../css/style.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="../css/print.css" media="print" />
     <link href="../css/bootstrap-theme.min.css" rel="stylesheet">
 
     <script src="../js/jquery-1.11.2.min.js"></script>
@@ -72,6 +73,7 @@ $objets=array();
       <div class="row">
         <div class="col-md-12">
           <h3 id="commandesofthe">Commandes du <?php echo(date_fr()); ?> </h3>
+          <a href="javascript:window.print()" class="print" >Imprimer cette page</a>
         </div>
       </div>
      
@@ -92,7 +94,7 @@ $objets=array();
                     echo '<th>'.$data['nom'].'</th>';
                   }
                 ?>
-                <th>Total</th>
+                <th>Prix</th>
               </tr>
             </thead>
             <tbody>
