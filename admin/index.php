@@ -153,12 +153,9 @@
 if(isset($_GET['date']))      $today=$_GET['date'];
 else      $today=date("y-m-d");
 
-// on se connecte à MySQL 
+// on se connecte à mysqli 
 include('../secure/config.php');
-$db=mysql_connect($SQLhost, $SQLlogin, $SQLpass) or die(mysql_error());
-
-// on sélectionne la base 
-mysql_select_db('pain',$db); 
+$db=mysqli_connect($SQLhost, $SQLlogin, $SQLpass, $SQLdb) or die(mysqli_error());
 
 ?> 
 
@@ -178,10 +175,10 @@ mysql_select_db('pain',$db);
 
             <?php 
               $sql = 'SELECT id,stock FROM objet;'; 
-              $req = mysql_query($sql) or die('Erreur SQL !<br>'.$sql.'<br>'.mysql_error()); 
+              $req = mysqli_query($db,$sql) or die('Erreur SQL !<br>'.$sql.'<br>'.mysqli_error()); 
 
               // on fait une boucle qui va faire un tour pour chaque enregistrement 
-              while($data = mysql_fetch_assoc($req)){
+              while($data = mysqli_fetch_assoc($req)){
                 $tmp=str_replace(' ', '_', $data['id']);
                 echo '<div class="input-group">';
                 echo '<input type="number" min="-1" class="form-control" id="'.$tmp.'" value="'.$data['stock'].'">';
@@ -214,9 +211,9 @@ mysql_select_db('pain',$db);
 
             <?php 
               $sql = 'SELECT article.nom as nom, objet, quantity FROM article, objetsInArticle WHERE article.id=objetsInArticle.article;'; 
-              $req = mysql_query($sql) or die('Erreur SQL !<br>'.$sql.'<br>'.mysql_error()); 
+              $req = mysqli_query($db,$sql) or die('Erreur SQL !<br>'.$sql.'<br>'.mysqli_error()); 
               //Affichage des liens produit article.
-              while($data = mysql_fetch_assoc($req)){
+              while($data = mysqli_fetch_assoc($req)){
                 echo '<div class="input-group">';
                 echo '<input type="number" min="-1" class="form-control" id="'.$tmp.'" value="'.$data['quantity'].'">';
                 echo '<span class="input-group-addon labellink">'.$data['objet'].'</span>';
@@ -234,9 +231,9 @@ mysql_select_db('pain',$db);
           <select class="form-control" id="linkselo">
           <?php 
             $sql = 'SELECT id FROM objet;'; 
-            $req = mysql_query($sql) or die('Erreur SQL !<br>'.$sql.'<br>'.mysql_error()); 
+            $req = mysqli_query($db,$sql) or die('Erreur SQL !<br>'.$sql.'<br>'.mysqli_error()); 
             //Affichage des liens produit article.
-            while($data = mysql_fetch_assoc($req)){
+            while($data = mysqli_fetch_assoc($req)){
               echo '<option value="'.$data['id'].'">'.$data['id'].'</option>';
               }
             ?>
@@ -245,9 +242,9 @@ mysql_select_db('pain',$db);
           <select class="form-control" id="linksela">
           <?php 
             $sql = 'SELECT id,nom FROM article;'; 
-            $req = mysql_query($sql) or die('Erreur SQL !<br>'.$sql.'<br>'.mysql_error()); 
+            $req = mysqli_query($db,$sql) or die('Erreur SQL !<br>'.$sql.'<br>'.mysqli_error()); 
             //Affichage des liens produit article.
-            while($data = mysql_fetch_assoc($req)){
+            while($data = mysqli_fetch_assoc($req)){
               echo '<option value="'.$data['id'].'">'.$data['nom'].'</option>';
               }
             ?>
@@ -268,10 +265,10 @@ mysql_select_db('pain',$db);
 
             <?php 
               $sql = 'SELECT id,nom,prix,img,actif,listorder FROM article ORDER BY listorder;'; 
-              $req = mysql_query($sql) or die('Erreur SQL !<br>'.$sql.'<br>'.mysql_error()); 
+              $req = mysqli_query($db,$sql) or die('Erreur SQL !<br>'.$sql.'<br>'.mysqli_error()); 
 
               // on fait une boucle qui va faire un tour pour chaque enregistrement 
-              while($data = mysql_fetch_assoc($req)){
+              while($data = mysqli_fetch_assoc($req)){
                 echo '<div class="input-group">';
                 $tmp=str_replace(' ', '_', $data['id']);
                 if($data['actif']=="1")
@@ -290,7 +287,7 @@ mysql_select_db('pain',$db);
                 echo '<button field="'.$tmp.'" class="btn btn-default maj" type="button">Mettre à jour</button>';
                 echo '</div><p></p>';
                 }
-                mysql_close(); 
+                mysqli_close($db); 
               ?>
 
           </div>

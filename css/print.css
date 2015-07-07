@@ -32,6 +32,7 @@ h2, h3, #contenu h3, #contenu a, a { /* Modification de la couleur des titres et
   color :#000;
 }
 
-.recup, .print{
+.recup,.unrecup, .print{
   display:none;
 }
+

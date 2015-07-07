@@ -80,7 +80,7 @@ $objets=array();
       
       <div id="insert" class="row">
         <div id="content" class="col-md-12">
-          <table id="main" class="table table-striped">
+          <table id="main" class="table fixed_headers table-striped">
             <thead>
               <tr>
                 <th></th>

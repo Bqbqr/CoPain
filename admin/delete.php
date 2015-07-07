@@ -91,6 +91,7 @@ $tab=array(array());
                     echo '<th>'.$data['nom'].'</th>';
                   }
                 ?>
+                <th>Total</th>
                 <th>Supprimé</th>
               </tr>
             </thead>

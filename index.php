@@ -274,13 +274,10 @@
 <?php 
 
 
-// on se connecte à MySQL 
+// on se connecte à mysqli 
 include('secure/config.php');
 include('admin/utils.php');
-$db=mysql_connect($SQLhost, $SQLlogin, $SQLpass) or die(mysql_error());
-
-// on sélectionne la base 
-mysql_select_db('pain',$db); 
+$db=mysqli_connect($SQLhost, $SQLlogin, $SQLpass,$SQLdb) or die(mysqli_error());
 
 ?> 
 
@@ -298,7 +295,7 @@ mysql_select_db('pain',$db);
         </div>
         <div id="navbar" class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
-            <li><a href="allergies.html">Allergènes</a></li>
+            <li><a href="allergies.html">Allergènes & Poids</a></li>
           </ul>
         </div><!--/.nav-collapse -->
       </div>
@@ -355,9 +352,9 @@ mysql_select_db('pain',$db);
         <div class="col-md-9">
           <?php
             $sql = 'SELECT listorder, nom, oa.article AS article, prix, img, quantity, stock, objet FROM article a INNER JOIN objetsInArticle oa on a.id=oa.article INNER JOIN objet o on o.id=oa.objet WHERE actif=1 AND stock!=0 ORDER BY listorder, quantity;'; 
-            $req = mysql_query($sql) or die('Erreur SQL !<br>'.$sql.'<br>'.mysql_error()); 
+            $req = mysqli_query($db,$sql) or die('Erreur SQL !<br>'.$sql.'<br>'.mysqli_error()); 
 
-            while($data = mysql_fetch_assoc($req)){
+            while($data = mysqli_fetch_assoc($req)){
               //Ici on gère le cas spécial de produits multiples.
               if($data['quantity']==-1){
                 echo '<div class="btn-group-vertical article" role="group"  aria-label="..." width="30%" >';
@@ -367,12 +364,12 @@ mysql_select_db('pain',$db);
                 
                 //Tricky part, had to check choices available for this one BEFORE closing everything...
                 $dataminus1=$data;
-                while($data = mysql_fetch_assoc($req)){
+                while($data = mysqli_fetch_assoc($req)){
                   if($dataminus1['nom']==$data['nom'] && $data['quantity']==-1){
                     echo '<span class="button option" produit="'.$data['nom'].'" article="'.$data['article'].'" price="'.$data['prix'].'" value="'.$data['objet'].'">'.$data['objet'].'</span>';
                   }
                   else if($dataminus1['nom']==$data['nom'] && $data['quantity']!=-1){
-                    $data = mysql_fetch_assoc($req);
+                    $data = mysqli_fetch_assoc($req);
                     break;
                   }
                   else
