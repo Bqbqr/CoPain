@@ -15,7 +15,9 @@
 
     <script src="../js/jquery-1.11.2.min.js"></script>
     <script src="../js/bootstrap.min.js"></script>
+
     <script type="text/javascript">
+
     $(document).ready(function() {
 
         $(document).on("click", ".recup", function(){
@@ -80,10 +82,10 @@ $objets=array();
       
       <div id="insert" class="row">
         <div id="content" class="col-md-12">
-          <table id="main" class="table fixed_headers table-striped">
+          <table id="main" class="table fixed_headers table-striped header-fixed">
             <thead>
               <tr>
-                <th></th>
+                <th>Etat</th>
                 <th>Nom</th>
                 <th>Emplacement</th>
                 <?php
@@ -131,10 +133,7 @@ $objets=array();
                   continue;
                 }
                 echo '<tr>';
-                if($data['taken']=='0')
-                  echo '<td><button value="'.$data['order'].'" type="button" class="btn btn-success recup" aria-label="Right Align">Récupérée</button></td>';
-                else
-                  echo '<td><button value="'.$data['order'].'" type="button" class="btn btn-warning unrecup" aria-label="Right Align">Annuler</button></td>';
+                echo '<td><button value="'.$data['order'].'" type="button" class="btn btn-success recup" aria-label="Right Align">Vendue</button></td>';
                 echo '<td>'.$data['name'].'</td>';
                 echo '<td>'.$data['pitch'].'</td>';
                 foreach ($objet as $obj) {
@@ -153,10 +152,7 @@ $objets=array();
                   continue;
                 }
                 echo '<tr>';
-                if($data['taken']=='0')
-                  echo '<td><button value="'.$data['order'].'" type="button" class="btn btn-success recup" aria-label="Right Align">Récupérée</button></td>';
-                else
-                  echo '<td><button value="'.$data['order'].'" type="button" class="btn btn-warning unrecup" aria-label="Right Align">Annuler</button></td>';
+                echo '<td><button value="'.$data['order'].'" type="button" class="btn btn-warning unrecup" aria-label="Right Align">Annuler</button></td>';
                 echo '<td>'.$data['name'].'</td>';
                 echo '<td>'.$data['pitch'].'</td>';
                 foreach ($objet as $obj) {
@@ -181,7 +177,7 @@ $objets=array();
               while($data = mysqli_fetch_assoc($req)){
                 $tab['total'][$data['nom']]=$data['total'];
               }
-              echo '<tr><td></td><td></td><th>Total:</th>';
+              echo '<tr><td></td><td></td><td>Total:</td>';
               foreach ($objet as $obj) {
                 if(array_key_exists ($obj , $tab['total']))
                   echo '<td>'.$tab['total'][$obj].'</td>';
@@ -200,7 +196,7 @@ $objets=array();
               while($data = mysqli_fetch_assoc($req)){
                 $tab['restant'][$data['nom']]=$data['total'];
               }
-              echo '<tr><td></td><td></td><th>Restant:</th>';
+              echo '<tr><td></td><td></td><td>Restant:</td>';
               foreach ($objet as $obj) {
                 if(array_key_exists ($obj , $tab['restant']))
                   echo '<td>'.$tab['restant'][$obj].'</td>';
