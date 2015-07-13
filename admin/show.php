@@ -140,7 +140,7 @@ $objets=array();
                   if(array_key_exists ($obj , $data))
                     echo '<td>'.$data[$obj].'</td>';
                   else
-                    echo '<td>0</td>';
+                    echo '<td>-</td>';
                 }
                 echo '<td>'.$data['total'].' €</td>';
                 echo '</tr>';
@@ -159,7 +159,7 @@ $objets=array();
                   if(array_key_exists ($obj , $data))
                     echo '<td>'.$data[$obj].'</td>';
                   else
-                    echo '<td>0</td>';
+                    echo '<td>-</td>';
                 }
                 echo '<td>'.$data['total'].' €</td>';
                 echo '</tr>';
