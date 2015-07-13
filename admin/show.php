@@ -20,11 +20,27 @@
 
     $(document).ready(function() {
 
+        $(document).on("click", ".redo", function(){
+            //On recup le nom du bouton ie le numéro de la commande
+              $.ajax({
+
+                  url: 'redo.php?numorder='+$(this).attr('value')+"&pitch="+$(this).attr('pitch')+"&name="+$(this).attr('name'), 
+                  success: function(html) {
+                    $("#insert").load("show.php?date="+$('#dateaffiche').val()+" #content");
+                    alert(html);
+
+                  },
+                  error: function(html){
+                    alert(html);
+                  }
+              });
+        });
+
         $(document).on("click", ".recup", function(){
             //On recup le nom du bouton ie le numéro de la commande
               $.ajax({
 
-                  url: 'taken.php?id='+$(this).attr('value'), // Le nom du fichier indiqué dans le formulaire
+                  url: 'taken.php?id='+$(this).attr('value'),
                   success: function(html) {
                     $("#insert").load("show.php?date="+$('#dateaffiche').val()+" #content");
                   },
@@ -38,7 +54,7 @@
             //On recup le nom du bouton ie le numéro de la commande
               $.ajax({
 
-                  url: 'untaken.php?id='+$(this).attr('value'), // Le nom du fichier indiqué dans le formulaire
+                  url: 'untaken.php?id='+$(this).attr('value'),
                   success: function(html) {
                     $("#insert").load("show.php?date="+$('#dateaffiche').val()+" #content");
                   },
@@ -97,6 +113,7 @@ $objets=array();
                   }
                 ?>
                 <th>Prix</th>
+                <th>Redo</th>
               </tr>
             </thead>
             <tbody>
@@ -143,6 +160,8 @@ $objets=array();
                     echo '<td>-</td>';
                 }
                 echo '<td>'.$data['total'].' €</td>';
+                echo '<td><button value="'.$data['order'].'" name='.$data['name'].' pitch='.$data['pitch'].' type="button" class="btn btn-info redo"><span class="glyphicon glyphicon-repeat" aria-hidden="true"></span></button></td>';
+
                 echo '</tr>';
 
               }
@@ -162,6 +181,7 @@ $objets=array();
                     echo '<td>-</td>';
                 }
                 echo '<td>'.$data['total'].' €</td>';
+                echo '<td><button value="'.$data['order'].'" name='.$data['name'].' pitch='.$data['pitch'].' type="button" class="btn btn-info redo"><span class="glyphicon glyphicon-repeat" aria-hidden="true"></span></button></td>';
                 echo '</tr>';
 
               }
@@ -172,7 +192,7 @@ $objets=array();
                                           SELECT sum(quantity) as qty, choice as nom FROM orders o INNER JOIN ordercontent oc on oc.numorder=o.id INNER JOIN objet obj on obj.id=oc.choice WHERE date=CURDATE() GROUP BY name,pitch,choice
                                           UNION ALL
                                           SELECT sum(quantity) as qty, nom FROM orders o INNER JOIN ordercontent oc on oc.numorder=o.id INNER JOIN article a on a.id=oc.article WHERE date=CURDATE() AND deleted=0 GROUP BY nom
-                                        ) s GROUP BY nom;') or die('Erreur SQL !'.mysql_error()); 
+                                        ) s GROUP BY nom;') or die('Erreur SQL !'.mysql_error());  
 
               while($data = mysqli_fetch_assoc($req)){
                 $tab['total'][$data['nom']]=$data['total'];
