@@ -101,15 +101,29 @@ $objets=array();
           <table id="main" class="table fixed_headers table-striped header-fixed">
             <thead>
               <tr>
-                <th>Etat</th>
-                <th>Nom</th>
-                <th>Emplacement</th>
+                <th>-</th>
+                <th>-</th>
+                <th>-</th>
                 <?php
                   $result= mysqli_query($bdd,"SELECT nom FROM article WHERE actif=1 ORDER BY listorder;") or die(mysqli_error($bdd));
                   $i=0;
                   while($data=mysqli_fetch_assoc($result)){  
                     $objet[$i++]=$data['nom'];
                     echo '<th>'.$data['nom'].'</th>';
+                  }
+                ?>
+                <th>-</th>
+                <th>-</th>
+              </tr>
+              <tr>
+                <th>Etat</th>
+                <th>Nom</th>
+                <th>Emplacement</th>
+                <?php
+                  $result= mysqli_query($bdd,"SELECT prix FROM article WHERE actif=1 ORDER BY listorder;") or die(mysqli_error($bdd));
+                  $i=0;
+                  while($data=mysqli_fetch_assoc($result)){
+                    echo '<th>'.$data['prix'].'€</th>';
                   }
                 ?>
                 <th>Prix</th>
