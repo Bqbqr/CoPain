@@ -8,6 +8,17 @@ include('secure/config.php');
 if(!$bdd=mysqli_connect($SQLhost, $SQLlogin,  $SQLpass, $SQLdb)){
 	echo "Erreur de connection mysql";
 }
+
+//Verification double pour les cas de commande en double WTF:
+$req= mysqli_query($bdd,"SELECT name, pitch FROM orders WHERE name='$parameters[name]' AND date=CURDATE()+INTERVAL 1 DAY AND deleted=0") or die(mysqli_error($bdd));
+if (mysqli_num_rows($req) != 0){
+	//Fin de la requête, rien a ajouter car commande déjà faite
+	mysqli_close($bdd);  // on ferme la connexion 
+	echo "Commande déjà existante";
+	return;
+}
+
+
 //On créé la commande avec le nom et l'emplacement
 mysqli_query($bdd,"INSERT INTO orders (name,pitch,date) VALUES('$parameters[name]','$parameters[pitch]' ,NOW()+INTERVAL 1 DAY)") or die(mysqli_error($bdd));
 $last = mysqli_insert_id($bdd); 

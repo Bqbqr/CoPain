@@ -179,6 +179,7 @@
         if(emplacement.length==2)
           emplacement = emplacement.slice(0, 1)+0+emplacement.slice(1,2);
 
+        //Test si emplacement de la forme LettreChiffreChiffre
         var patt = new RegExp(/^[a-zA-Z][0-9]{1,2}$/);
         var res = patt.test(emplacement);
         if(name == '' || emplacement == '') {
@@ -186,46 +187,46 @@
             return;
         }
         else if(res==false){
-            alert("L'emplacement doit être une lettre et un (ou deux) chiffres. Pitch need to be Letter Number");
+            alert("L'emplacement doit être une lettre et un (ou deux) chiffres. Pitch need to be Letter+Number");
             return;
         }
         var oldBtn = $("#valider").html();
         $("#valider").html('Loading...').attr('disabled', true);
         //Verification de l'existence du nom dans la bdd:
-          $.ajax({
-            type: "GET",
-            dataType: "json",
-            url: "isInDb.php?nom="+name+"&emplacement="+emplacement,
-            success: function(data) {
-              $("#valider").html(oldBtn).attr('disabled', false);
-              var verif=data["value"];
-              if(verif=="double"){
-                var ask;
-                ask="Une commande pour "+name+" existe déjà:\n"
-                for (var k in data){
-                    if (data.hasOwnProperty(k) && k!="value" && k!="numorder") {
-                      ask=ask+data[k]+" "+k+"\n";
-                    }
-                }
-                ask=ask+"Voulez vous remplacer cette commande?";
-                if (!confirm(ask)) {
-                  return;   
-                }else{
-                  deleteOrder(data["numorder"]);
-                }
+        $.ajax({
+          type: "GET",
+          dataType: "json",
+          url: "isInDb.php?nom="+name+"&emplacement="+emplacement,
+          success: function(data) {
+            $("#valider").html(oldBtn).attr('disabled', false);
+            var verif=data["value"];
+            if(verif=="double"){
+              var ask;
+              ask="Une commande pour "+name+" existe déjà:\n"
+              for (var k in data){
+                  if (data.hasOwnProperty(k) && k!="value" && k!="numorder") {
+                    ask=ask+data[k]+" "+k+"\n";
+                  }
               }
-              else if(verif!="true"){
-                if (!confirm("Doublon pour "+verif+" ! Commander quand même? "+verif+" as already done an order, add it anyway?")) {
-                  return;   
-                }
+              ask=ask+"Voulez vous remplacer cette commande?";
+              if (!confirm(ask)) {
+                return;   
+              }else{
+                deleteOrder(data["numorder"]);
               }
-              doYourBusiness(name, emplacement);
-            },
-            error: function(html){
-              $("#valider").html(oldBtn).attr('disabled', false);
-              alert(html);
             }
-          });
+            else if(verif!="true"){
+              if (!confirm("Doublon pour "+verif+" ! Commander quand même? "+verif+" as already done an order, add it anyway?")) {
+                return;   
+              }
+            }
+            doYourBusiness(name, emplacement);
+          },
+          error: function(html){
+            $("#valider").html(oldBtn).attr('disabled', false);
+            alert("Erreur, veuillez réessayer ou commander au bar \nError, Please try again or order at the bar");
+          }
+        });
 
         
         });
