@@ -202,13 +202,13 @@
             var verif=data["value"];
             if(verif=="double"){
               var ask;
-              ask="Une commande pour "+name+" existe déjà:\n"
+              ask="Une commande pour "+name+" existe déjà:\nAn Order for "+name+" already exists:\n"
               for (var k in data){
                   if (data.hasOwnProperty(k) && k!="value" && k!="numorder") {
                     ask=ask+data[k]+" "+k+"\n";
                   }
               }
-              ask=ask+"Voulez vous remplacer cette commande?";
+              ask=ask+"Voulez vous remplacer cette commande?\nDo you want to replace this order?";
               if (!confirm(ask)) {
                 return;   
               }else{
