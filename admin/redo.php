@@ -19,7 +19,7 @@ if(!$bdd=mysqli_connect($SQLhost, $SQLlogin,  $SQLpass, $SQLdb)){
 //Vérification de l'existence de la commande.
 $req=mysqli_query($bdd,"SELECT numorder FROM orders o INNER JOIN ordercontent oc on oc.numorder=o.id INNER JOIN article a on a.id=oc.article WHERE date=CURDATE()+INTERVAL 1 DAY AND deleted=0 AND name='$name' AND pitch='$pitch' GROUP BY numorder;") or die('Erreur requête' . mysqli_error($bdd));
 if(mysqli_fetch_assoc($req)){
-	echo "Commande déjà effectuée, annulation";
+	echo "Commande pour $name déjà effectuée, annulation";
 	return;
 }
 
@@ -71,6 +71,6 @@ foreach ($insert as $key => $value) {
 
 mysqli_close($bdd);  // on ferme la connexion 
 //header('Location: index.php');
-echo "Commande pour le lendemain effectuée avec succès!";
+echo "$name \n Commande pour le lendemain effectuée avec succès!";
 
 ?>
