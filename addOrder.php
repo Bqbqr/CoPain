@@ -2,11 +2,15 @@
 
 $parameters = $_REQUEST['parameters'];
 
-// on se connecte à MySQL 
+if (count($parameters)<=2){
+	echo "404";
+	return;
+}
+//Inclusion du password + identifiants
 include('secure/config.php');
-//Create connection
 if(!$bdd=mysqli_connect($SQLhost, $SQLlogin,  $SQLpass, $SQLdb)){
 	echo "Erreur de connection mysql";
+	return;
 }
 
 //Verification double pour les cas de commande en double WTF:
@@ -22,6 +26,8 @@ if (mysqli_num_rows($req) != 0){
 //On créé la commande avec le nom et l'emplacement
 mysqli_query($bdd,"INSERT INTO orders (name,pitch,date) VALUES('$parameters[name]','$parameters[pitch]' ,NOW()+INTERVAL 1 DAY)") or die(mysqli_error($bdd));
 $last = mysqli_insert_id($bdd); 
+
+
 
 foreach ($parameters as $key => $value) {
 	if($key=="name" || $key=="pitch")

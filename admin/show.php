@@ -31,7 +31,7 @@
 
                   },
                   error: function(html){
-                    alert(html);
+                    alert("!! Erreur !!\n, vérifiez votre connection internet et réessayez!");
                   }
               });
         });

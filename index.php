@@ -202,7 +202,7 @@
             var verif=data["value"];
             if(verif=="double"){
               var ask;
-              ask="Une commande pour "+name+" existe déjà:\nAn Order for "+name+" already exists:\n"
+              ask="Une commande pour "+name+" existe déjà:\nAn Order for" +name+" already exists:\n"
               for (var k in data){
                   if (data.hasOwnProperty(k) && k!="value" && k!="numorder") {
                     ask=ask+data[k]+" "+k+"\n";
@@ -257,10 +257,15 @@
             url: "addOrder.php",
             data: { 'parameters' : array},
             success: function(html){
+              if(html=="404"){
+                alert("Erreur de transmission, veuillez réessayer\nAn error has occurred, please try again");
+                return;
+              }
               //alert(html);
               $('#validation').show();
               $('#validation').delay(5000).fadeOut(1000);
               resetPanier();
+              alert(html);
             },
             error: function(html){
               alert(html);
