@@ -88,20 +88,11 @@ $objets=array();
               <?php  
               //Include des fonctions de date
               include('utils.php');
-              // on crée la requête SQL 
-              $njour = date('d');
-              $jour = datedayfr(date('y-m-d'));
-              $mois = datemonthfr(date('Y-m-d'));
-
               $req = mysqli_query($bdd,'SELECT DISTINCT date FROM orders ORDER BY date DESC;') or die('Erreur SQL !<br>'.mysql_error()); 
 
               // on fait une boucle qui va faire un tour pour chaque enregistrement 
-              while($data = mysqli_fetch_assoc($req)) 
-                {
-                  $njour = date('d', strtotime($data['date']));
-                  $jour = datedayfr($data['date']);
-                  $mois = datemonthfr($data['date']);
-                  echo "<option value='".$data['date']."'> $jour $njour $mois";
+              while($data = mysqli_fetch_assoc($req)){
+                  echo "<option value='".$data['date']."'>".date_fr_arg($data['date']);
                 }
               ?>
             </select>
