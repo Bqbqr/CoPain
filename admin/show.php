@@ -12,9 +12,12 @@
     <link href="../css/style.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="../css/print.css" media="print" />
     <link href="../css/bootstrap-theme.min.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="../css/component.css" />
 
-    <script src="../js/jquery-1.11.2.min.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery-throttle-debounce/1.1/jquery.ba-throttle-debounce.min.js"></script>
     <script src="../js/bootstrap.min.js"></script>
+    <script src="../js/jquery.stickyheader.js"></script>
 
     <script type="text/javascript">
 
@@ -97,8 +100,8 @@ $objets=array();
      
       
       <div id="insert" class="row">
-        <div id="content" class="col-md-12">
-          <table id="main" class="table fixed_headers table-striped header-fixed">
+        <div id="content" class="col-md-12 component">
+          <table id="main" class="table table-striped">
             <thead>
               <tr>
                 <th>-</th>
@@ -233,6 +236,7 @@ $objets=array();
                   $tab['restant'][$data['nom']]=$data['total'];
                 }
                 echo '<tr><td></td><td></td><td>Restant:</td>';
+                
                 foreach ($objet as $obj) {
                   if(array_key_exists("restant", $tab) && array_key_exists ($obj , $tab['restant']))
                     echo '<td>'.$tab['restant'][$obj].'</td>';
