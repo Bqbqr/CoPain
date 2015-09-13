@@ -137,7 +137,6 @@ $objets=array();
 
               // Si aucun article, on s'arrête là, aucune commande pour le jour même.
               if(mysqli_num_rows($req)){  
-
                 // remplit notre tableau
                 while($data = mysqli_fetch_assoc($req)){
                   $tab[$data['numorder']][$data['nom']]=$data['quantity'];
@@ -235,7 +234,7 @@ $objets=array();
                 }
                 echo '<tr><td></td><td></td><td>Restant:</td>';
                 foreach ($objet as $obj) {
-                  if(array_key_exists ($obj , $tab['restant']))
+                  if(array_key_exists("restant", $tab) && array_key_exists ($obj , $tab['restant']))
                     echo '<td>'.$tab['restant'][$obj].'</td>';
                   else
                     echo '<td>0</td>';
