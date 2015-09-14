@@ -1,13 +1,5 @@
 /* Component styles */
-@font-face {
-	font-family: 'Blokk';
-	src: url('../fonts/blokk/BLOKKRegular.eot');
-	src: url('../fonts/blokk/BLOKKRegular.eot?#iefix') format('embedded-opentype'),
-		 url('../fonts/blokk/BLOKKRegular.woff') format('woff'),
-		 url('../fonts/blokk/BLOKKRegular.svg#BLOKKRegular') format('svg');
-	font-weight: normal;
-	font-style: normal;
-}
+
 .component {
 	line-height: 1.5em;
 	margin: 0 auto;
@@ -36,9 +28,8 @@ td, th {
 		line-height: 1;
 	}
 th {
-    background-color: #31bc86;
-    font-weight: bold;
-    color: #fff;
+    background-color: #A2A2A2;
+
     white-space: nowrap;
 }
 tbody th {
