@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
     <meta name="author" content="Bqbqr">
+    <meta http-equiv="refresh" content="120;" />
 
     <title>Commande Pain</title>
 
@@ -390,8 +391,7 @@ $db=mysqli_connect($SQLhost, $SQLlogin, $SQLpass,$SQLdb) or die(mysqli_error());
 
               }
 
-              //Cas spéciaux où on se retrouve avec un data vite a cause de la boucle précédente
-
+              //Cas spéciaux où on se retrouve avec un data vide a cause de la boucle précédente
               if($data['img']=="")  break;
 
               echo '<div class="btn-group-vertical article clic-article" role="group"  aria-label="..." width="30%" price="'.$data['prix'].'" article="'.$data['article'].'" id="'.$data['nom'].'">';

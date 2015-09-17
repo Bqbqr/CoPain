@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
     <meta name="author" content="Bqbqr">
+    <meta http-equiv="refresh" content="120;" />
+
 
     <title>Commande Pain</title>
 
@@ -29,9 +31,7 @@
 
                   url: 'redo.php?numorder='+$(this).attr('value')+"&pitch="+$(this).attr('pitch')+"&name="+$(this).attr('name'), 
                   success: function(html) {
-                    $("#insert").load("show.php?date="+$('#dateaffiche').val()+" #content");
                     alert(html);
-
                   },
                   error: function(html){
                     alert("!! Erreur !!\n, vérifiez votre connection internet et réessayez!");
@@ -45,7 +45,8 @@
 
                   url: 'taken.php?id='+$(this).attr('value'),
                   success: function(html) {
-                    $("#insert").load("show.php?date="+$('#dateaffiche').val()+" #content");
+                    //$("#insert").load("show.php #content");
+                    location.reload();
                   },
                   error: function(html){
                     alert(html);
@@ -59,7 +60,8 @@
 
                   url: 'untaken.php?id='+$(this).attr('value'),
                   success: function(html) {
-                    $("#insert").load("show.php?date="+$('#dateaffiche').val()+" #content");
+                    //$("#insert").load("show.php #content");
+                    location.reload();
                   },
                   error: function(html){
                     alert(html);
