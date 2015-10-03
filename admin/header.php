@@ -16,6 +16,7 @@
             <li><a href="show.php">Commandes du jour</a></li>
             <li><a href="delete.php">Suppression</a></li>
             <li><a href="archives.php">Historique</a></li>
+            <li><a href="stats.php">Statistiques</a></li>
           </ul>
         </div><!--/.nav-collapse -->
       </div>
