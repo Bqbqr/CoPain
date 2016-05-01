@@ -68,8 +68,8 @@ $bdd=mysqli_connect($SQLhost, $SQLlogin, $SQLpass, $SQLdb) or die(mysql_error())
 $result= mysqli_query($bdd,"SELECT MONTH(date) as month,nom,SUM(quantity) as quantity FROM orders as o INNER JOIN ordercontent as oc ON o.id=oc.numorder INNER JOIN article as a ON oc.article=a.id GROUP BY MONTH(date),nom;") or die(mysqli_error($bdd));
 
 while ($row = mysqli_fetch_array($result)) {
-   $data[$row['nom']][] = $row['quantity'];
-   $date[] = $row['month'];
+   $data[$row['nom']][$row['month']] = $row['quantity'];
+   $date[]=$row['month'];
 }
 $date= array_unique($date, SORT_REGULAR);
 ?>
@@ -110,18 +110,21 @@ $date= array_unique($date, SORT_REGULAR);
               ]
             },
             series: [
-              <?php
-                foreach($data as $key => $bin){
-                  echo "{name: '$key',\n";
-                  echo "data:[";
-                  foreach($data[$key] as $value){
-                    echo "$value,";
-                  }
-                  echo "]},\n";
+            <?php
+              foreach($data as $key => $value){
+                echo "{\nname:'$key',\ndata:[";
+                foreach($date as $tmpdate){
+                  if(!array_key_exists($tmpdate, $value))
+                    echo "0,";
+                  else
+                    echo "$value[$tmpdate],";
                 }
+                echo "],\n},";
+              }
               ?>
-              ]
+            ]
       });
     </script>
+
   </body>
 </html>
