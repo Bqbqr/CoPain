@@ -54,6 +54,9 @@
             row=i;
         }
 
+        //Vérification de la dispo ici ?
+        
+
         //Si ça existe, on incrémente
         if(row!='-1'){
           table.rows[row].cells[0].innerHTML=parseInt(table.rows[row].cells[0].innerHTML)+1;
@@ -72,7 +75,7 @@
           cell1.innerHTML="1";
           cell2.innerHTML=id;
           cell3.innerHTML=price;
-          //Ajout de la "corbeille" pour supprimer la dite ligne.
+          //Ajout de la "corbeille" pour supprimer la ligne.
           cell4.innerHTML='<button type="button" object="'+object+'" value="'+id+'"class="btn btn-xs cancel"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button>';
 
         }
@@ -84,7 +87,7 @@
         document.getElementById("total").value=sum.toFixed(2)+" €";
       }
 
-
+      //Vidage du panier
       function resetPanier(){
         var table = document.getElementById("paniert");
         array={};
@@ -262,11 +265,14 @@
                 alert("Erreur de transmission, veuillez réessayer\nAn error has occurred, please try again");
                 return;
               }
+
               //alert(html);
               $('#validation').show();
+              $('#valider').hide();
               $('#validation').delay(5000).fadeOut(1000);
+              $('#valider').delay(5000).fadeIn(1000);
+
               resetPanier();
-              alert(html);
             },
             error: function(html){
               alert(html);
@@ -362,7 +368,7 @@ $db=mysqli_connect($SQLhost, $SQLlogin, $SQLpass,$SQLdb) or die(mysqli_error());
             $req = mysqli_query($db,$sql) or die('Erreur SQL !<br>'.$sql.'<br>'.mysqli_error()); 
 
             while($data = mysqli_fetch_assoc($req)){
-              //Ici on gère le cas spécial de produits multiples.
+              //Ici on gère le cas spécial de produits multiples type petit déjeuner.
               if($data['quantity']==-1){
                 echo '<div class="btn-group-vertical article" role="group"  aria-label="..." width="30%" >';
                 echo '<div id="confirmBox">';
@@ -390,6 +396,7 @@ $db=mysqli_connect($SQLhost, $SQLlogin, $SQLpass,$SQLdb) or die(mysqli_error());
                 echo '</div>';
 
               }
+              // Fin des cas spéciaux
 
               //Cas spéciaux où on se retrouve avec un data vide a cause de la boucle précédente
               if($data['img']=="")  break;
