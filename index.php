@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
     <meta name="author" content="Bqbqr">
-    <meta http-equiv="refresh" content="120;" />
 
     <title>Commande Pain</title>
 
@@ -265,8 +264,6 @@
                 alert("Erreur de transmission, veuillez réessayer\nAn error has occurred, please try again");
                 return;
               }
-
-              //alert(html);
               $('#validation').show();
               $('#valider').hide();
               $('#validation').delay(5000).fadeOut(1000);
