@@ -324,12 +324,14 @@ $db=mysqli_connect($SQLhost, $SQLlogin, $SQLpass,$SQLdb) or die(mysqli_error());
       <div class="row">
         <div class="col-md-3">
           <span class="label label-info">Entrer votre nom ainsi que votre emplacement</span></br>
-          <span class="label label-info">Please enter your name and your pitch</span></br></br>
+          <span class="label label-info">Please enter your name and your pitch</span></br>
           <div class="input-group">
             <input type="text" class="form-control" id="name" value="" placeholder="Nom/Name">
             <input type="text" class="form-control" id="emplacement" value="" placeholder="Emplacement/Pitch">
           </div>
 
+          <span class="label label-danger">N'oublier pas de cliquer sur commander !</span></br>
+          <span class="label label-danger">Do not forget to click on order !</span></br>
 
           <div id="panierh"class="highlight"><pre>
             <table id="paniert" class="table table-striped table-panier">
@@ -352,7 +354,7 @@ $db=mysqli_connect($SQLhost, $SQLlogin, $SQLpass,$SQLdb) or die(mysqli_error());
             <span class="input-group-addon" id="sizing-addon2">Total:</span>
             <input id="total" value="0.00" type="text" class="form-control" aria-describedby="sizing-addon1" readonly>
           </div>
-          <button id="valider" type="button" class="btn btn-primary btn-lg">Commander</button>
+          <button id="valider" type="button" class="btn btn-primary btn-lg">Valider / Order</button>
           <div id="validation" class="alert alert-success" role="alert" style="display:none;">
             <p> Commande validée avec succès! Order done! </p>
           </div>
