@@ -19,42 +19,7 @@
     <script src="http://code.highcharts.com/modules/exporting.js"></script>
     <script type="text/javascript">
 
-    $(document).ready(function() {
-
-      
-
-        $(document).on("click", ".recup", function(){
-            //On recup le nom du bouton ie le numéro de la commande
-              $.ajax({
-
-                  url: 'taken.php?id='+$(this).attr('value'), // Le nom du fichier indiqué dans le formulaire
-                  success: function(html) { // Je récupère la réponse du fichier PHP
-                    $("#insert").load("archives.php?date="+$('#dateaffiche').val()+" #content");
-                  },
-                  error: function(html){
-                    alert(html);
-                  }
-              });
-        });
-
-        $(document).on("click", ".unrecup", function(){
-            //On recup le nom du bouton ie le numéro de la commande
-              $.ajax({
-
-                  url: 'untaken.php?id='+$(this).attr('value'), // Le nom du fichier indiqué dans le formulaire
-                  success: function(html) { // Je récupère la réponse du fichier PHP
-                    $("#insert").load("archives.php?date="+$('#dateaffiche').val()+" #content");
-                  },
-                  error: function(html){
-                    alert(html);
-                  }
-              });
-        });
-
-        $('#dateaffiche').change(function(){
-          $("#insert").load("archives.php?date="+$(this).val()+" #content");
-        });
-
+    $(document).ready(function() {       
     });
 
 
@@ -62,7 +27,7 @@
   </head>
 
 <?php
-// on se connecte à MySQL 
+// Connection MySQL 
 include('../secure/config.php');
 $bdd=mysqli_connect($SQLhost, $SQLlogin, $SQLpass, $SQLdb) or die(mysql_error());
 $result= mysqli_query($bdd,"SELECT MONTH(date) as month,nom,SUM(quantity) as quantity FROM orders as o INNER JOIN ordercontent as oc ON o.id=oc.numorder INNER JOIN article as a ON oc.article=a.id GROUP BY MONTH(date),nom;") or die(mysqli_error($bdd));
