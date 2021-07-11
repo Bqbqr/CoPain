@@ -57,6 +57,7 @@
   </head>
 
 <?php
+
 // on se connecte à MySQL 
 include('../secure/config.php');
 include('utils.php');
@@ -112,7 +113,7 @@ $tab=array(array());
               }
 
               //Et là on récupère nos options. on actualise le tableau ensuite.
-              $req = mysqli_query($bdd,"SELECT numorder,name,pitch, sum(quantity) as quantity, choice FROM orders o INNER JOIN ordercontent oc on oc.numorder=o.id INNER JOIN objet obj on obj.id=oc.choice WHERE date='$tomorrow' GROUP BY name,numorder,choice;") or die('Erreur SQL !'.mysqli_error($bdd); 
+              $req = mysqli_query($bdd,"SELECT numorder,name,pitch, sum(quantity) as quantity, choice FROM orders o INNER JOIN ordercontent oc on oc.numorder=o.id INNER JOIN objet obj on obj.id=oc.choice WHERE date='$tomorrow' GROUP BY name,numorder,choice;") or die('Erreur SQL !'.mysqli_error($bdd)); 
               while($data = mysqli_fetch_assoc($req)){
                 if(array_key_exists($data['choice'], $tab[$data['numorder']]))
                   $tab[$data['numorder']][$data['choice']]+=$data['quantity'];
