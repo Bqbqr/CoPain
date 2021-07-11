@@ -5,8 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
     <meta name="author" content="Bqbqr">
-    <meta http-equiv="refresh" content="120;" />
-
 
     <title>Commande Pain</title>
 
@@ -170,8 +168,9 @@ $objets=array();
                   if ($name=="0" || $data["taken"]==1) {
                     continue;
                   }
-                  echo '<tr>';
-                  echo '<td><button value="'.$data['order'].'" type="button" class="btn btn-success recup" aria-label="Right Align">Vendue</button></td>';
+
+                  echo '<tr data-toggle="modal" data-target="#myModal'.$data['order'].'">';
+                  echo '<td><button value="'.$data['order'].'" type="button" class="btn btn-success" aria-label="Right Align">Vendue</button></td>';
                   echo '<td>'.$data['name'].'</td>';
                   echo '<td>'.$data['pitch'].'</td>';
                   foreach ($objet as $obj) {
@@ -184,6 +183,34 @@ $objets=array();
                   echo '<td><button value="'.$data['order'].'" name='.$data['name'].' pitch='.$data['pitch'].' type="button" class="btn btn-info redo"><span class="glyphicon glyphicon-repeat" aria-hidden="true"></span></button></td>';
 
                   echo '</tr>';
+                                    /* Gestion des popups */
+                  echo '<!-- Modal -->';
+                  echo '<div id="myModal'.$data['order'].'" class="modal fade nohide" data-dismiss="false" role="dialog">';
+                  echo '  <div class="modal-dialog">';
+                  echo '    <!-- Modal content-->';
+                  echo '    <div class="modal-content">';
+                  echo '      <div class="modal-header">';
+                  echo '        <button type="button" class="close" data-dismiss="modal">&times;</button>';
+                  echo '        <h4 class="modal-title">Commande de '.$data['name'].', '.$data['pitch'].'</h4>';
+                  echo '      </div>';
+                  echo '      <div class="modal-body">';
+                  /* Affichage de la commande */
+                  echo '<p>';
+                  foreach ($objet as $obj) {
+                    if(array_key_exists ($obj , $data))
+                      echo $data[$obj].' '.$obj.'</br>';
+                  }
+                  echo 'Total: '.$data['total'].' €</p>';
+                  /* Fin */
+                  echo '      </div>';
+                  echo '      <div class="modal-footer">';
+                  echo '        <button value="'.$data['order'].'" name='.$data['name'].' pitch='.$data['pitch'].'  type="button" class="btn btn-default redo recup" style="float:left" data-dismiss="modal">Recommander et valider</button>';
+                  echo '        <button value="'.$data['order'].'"  type="button" class="btn btn-default recup" data-dismiss="modal">Valider</button>';
+                  echo '      </div>';
+                  echo '    </div>';
+                  echo '  </div>';
+                  echo '</div>';
+                  /* fin de gestion des popups */
 
                 }
                 //Not taken
@@ -192,7 +219,7 @@ $objets=array();
                     continue;
                   }
                   echo '<tr>';
-                  echo '<td><button value="'.$data['order'].'" type="button" class="btn btn-warning unrecup" aria-label="Right Align">Annuler</button></td>';
+                  echo '<td><button value="'.$data['order'].'" type="button" class="btn unrecup" aria-label="Right Align">Annuler</button></td>';
                   echo '<td>'.$data['name'].'</td>';
                   echo '<td>'.$data['pitch'].'</td>';
                   foreach ($objet as $obj) {

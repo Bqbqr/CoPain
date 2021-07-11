@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -225,9 +226,10 @@
             }
             doYourBusiness(name, emplacement);
           },
-          error: function(html){
+          error: function(html, error){
             $("#valider").html(oldBtn).attr('disabled', false);
-            alert("Erreur, veuillez réessayer ou commander au bar \nError, Please try again or order at the bar");
+            alert("Erreur : "+html);
+            //alert("Erreur, veuillez réessayer ou commander au bar \nError, Please try again or order at the bar");
           }
         });
 
@@ -268,6 +270,7 @@
               $('#valider').hide();
               $('#validation').delay(5000).fadeOut(1000);
               $('#valider').delay(5000).fadeIn(1000);
+              alert("Votre commande à bien été effectué, Merci \nYour order has been successfuly done, Thank you");
 
               resetPanier();
             },
@@ -283,6 +286,7 @@
 
 <?php 
 
+ini_set('display_errors', 1);
 
 // on se connecte à mysqli 
 include('secure/config.php');
@@ -330,7 +334,7 @@ $db=mysqli_connect($SQLhost, $SQLlogin, $SQLpass,$SQLdb) or die(mysqli_error());
             <input type="text" class="form-control" id="emplacement" value="" placeholder="Emplacement/Pitch">
           </div>
 
-          <span class="label label-danger">N'oublier pas de cliquer sur commander !</span></br>
+          <span class="label label-danger">N'oubliez pas de cliquer sur commander !</span></br>
           <span class="label label-danger">Do not forget to click on order !</span></br>
 
           <div id="panierh"class="highlight"><pre>

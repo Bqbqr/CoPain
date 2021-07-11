@@ -60,7 +60,7 @@
 // on se connecte à MySQL 
 include('../secure/config.php');
 include('utils.php');
-$bdd=mysqli_connect($SQLhost, $SQLlogin, $SQLpass, $SQLdb) or die(mysql_error());
+$bdd=mysqli_connect($SQLhost, $SQLlogin, $SQLpass, $SQLdb) or die(mysqli_error($bdd));
 
 $tomorrow = date('Y-m-d',strtotime(date("y-m-d")  . "+1 days"));//date('d-m-Y',strtotime(date("Y-m-d") . "+1 days"));
 $tab=array(array());
@@ -99,7 +99,7 @@ $tab=array(array());
               <?php 
               // On récupère tous les articles normaux. Sans les options
               $sql = "SELECT numorder,name,pitch,nom,taken,deleted,sum(quantity) as quantity FROM orders o INNER JOIN ordercontent oc on oc.numorder=o.id INNER JOIN article a on a.id=oc.article WHERE date='$tomorrow' GROUP BY nom,numorder ORDER BY name;";
-              $req = mysqli_query($bdd,$sql) or die('Erreur SQL !'.mysql_error()); 
+              $req = mysqli_query($bdd,$sql) or die('Erreur SQL !'.mysqli_error($bdd)); 
 
               // remplit notre tableau
               while($data = mysqli_fetch_assoc($req)){
@@ -112,7 +112,7 @@ $tab=array(array());
               }
 
               //Et là on récupère nos options. on actualise le tableau ensuite.
-              $req = mysqli_query($bdd,"SELECT numorder,name,pitch, sum(quantity) as quantity, choice FROM orders o INNER JOIN ordercontent oc on oc.numorder=o.id INNER JOIN objet obj on obj.id=oc.choice WHERE date='$tomorrow' GROUP BY name,numorder,choice;") or die('Erreur SQL !'.mysql_error()); 
+              $req = mysqli_query($bdd,"SELECT numorder,name,pitch, sum(quantity) as quantity, choice FROM orders o INNER JOIN ordercontent oc on oc.numorder=o.id INNER JOIN objet obj on obj.id=oc.choice WHERE date='$tomorrow' GROUP BY name,numorder,choice;") or die('Erreur SQL !'.mysqli_error($bdd); 
               while($data = mysqli_fetch_assoc($req)){
                 if(array_key_exists($data['choice'], $tab[$data['numorder']]))
                   $tab[$data['numorder']][$data['choice']]+=$data['quantity'];
@@ -120,7 +120,7 @@ $tab=array(array());
                   $tab[$data['numorder']][$data['choice']]=$data['quantity'];
               }
               //On récup aussi le total des commandes:
-              $req = mysqli_query($bdd,"SELECT numorder,sum(quantity*prix) as total FROM orders o INNER JOIN ordercontent oc on oc.numorder=o.id INNER JOIN article a on a.id=oc.article WHERE date='$tomorrow' GROUP BY numorder ORDER BY name;") or die('Erreur SQL !'.mysql_error()); 
+              $req = mysqli_query($bdd,"SELECT numorder,sum(quantity*prix) as total FROM orders o INNER JOIN ordercontent oc on oc.numorder=o.id INNER JOIN article a on a.id=oc.article WHERE date='$tomorrow' GROUP BY numorder ORDER BY name;") or die('Erreur SQL !'.mysqli_error($bdd)); 
               while($data = mysqli_fetch_assoc($req)){
                 $tab[$data['numorder']]['total']=$data['total'];
               }

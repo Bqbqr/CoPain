@@ -12,10 +12,7 @@ else      $qty="";
 
 // on se connecte à MySQL 
 include('../secure/config.php');
-$db=mysql_connect($SQLhost, $SQLlogin, $SQLpass) or die(mysql_error());
-// sélection de la base  
-
-mysql_select_db('pain',$db)  or die('Erreur de selection '.mysql_error()); 
+$db=mysqli_connect($SQLhost, $SQLlogin, $SQLpass, $SQLdb) or die(mysqli_error($db));
  
 //Vérif de la présence ou non du lien.
 $sql = "SELECT * FROM objetsInArticle WHERE article='$article' AND objet='$objet'"; 
@@ -25,8 +22,8 @@ $sql = "SELECT * FROM objetsInArticle WHERE article='$article' AND objet='$objet
 $sql = "INSERT INTO objetsInArticle (article,objet,quantity) VALUES ('$article','$objet','$qty')"; 
 
 // on insère les informations du formulaire dans la table 
-mysql_query($sql) or die('Erreur SQL !'.$sql.'<br>'.mysql_error()); 
-mysql_close();  // on ferme la connexion 
+mysqli_query($db, $sql) or die('Erreur SQL !'.$sql.'<br>'.mysqli_error($db)); 
+mysqli_close($db);  // on ferme la connexion 
 //header('Location: index.php');
 echo "Q".$objetQ."Objet ".$objetN." créé";
 ?>

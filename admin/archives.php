@@ -62,7 +62,7 @@ else      $today=date('Y-m-d',strtotime(date("y-m-d")  . "+1 days"));//,strtotim
 
 // on se connecte à MySQL 
 include('../secure/config.php');
-$bdd=mysqli_connect($SQLhost, $SQLlogin, $SQLpass, $SQLdb) or die(mysql_error());
+$bdd=mysqli_connect($SQLhost, $SQLlogin, $SQLpass, $SQLdb) or die(mysqli_error($bdd));
 $tab=array(array());
 $objets=array();
 
@@ -88,7 +88,7 @@ $objets=array();
               <?php  
               //Include des fonctions de date
               include('utils.php');
-              $req = mysqli_query($bdd,'SELECT DISTINCT date FROM orders ORDER BY date DESC;') or die('Erreur SQL !<br>'.mysql_error()); 
+              $req = mysqli_query($bdd,'SELECT DISTINCT date FROM orders ORDER BY date DESC;') or die('Erreur SQL !<br>'.mysqli_error($bdd)); 
 
               // on fait une boucle qui va faire un tour pour chaque enregistrement 
               while($data = mysqli_fetch_assoc($req)){
@@ -122,7 +122,7 @@ $objets=array();
             <tbody>
               <?php 
               // On récupère tous les articles normaux. Sans les options
-              $req = mysqli_query($bdd,'SELECT numorder,name,pitch,nom,taken,sum(quantity) as quantity FROM orders o INNER JOIN ordercontent oc on oc.numorder=o.id INNER JOIN article a on a.id=oc.article WHERE date="'.$today.'" AND deleted=0 GROUP BY nom,numorder ORDER BY name;') or die('Erreur SQL !'.mysql_error()); 
+              $req = mysqli_query($bdd,'SELECT numorder,name,pitch,nom,taken,sum(quantity) as quantity FROM orders o INNER JOIN ordercontent oc on oc.numorder=o.id INNER JOIN article a on a.id=oc.article WHERE date="'.$today.'" AND deleted=0 GROUP BY nom,numorder ORDER BY name;') or die('Erreur SQL !'.mysqli_error($bdd)); 
 
               // remplit notre tableau
               while($data = mysqli_fetch_assoc($req)){
@@ -134,7 +134,7 @@ $objets=array();
               }
 
               //Et là on récupère nos options. on actualise le tableau ensuite.
-              $req = mysqli_query($bdd,'SELECT numorder,name,pitch, sum(quantity) as quantity, choice FROM orders o INNER JOIN ordercontent oc on oc.numorder=o.id INNER JOIN objet obj on obj.id=oc.choice WHERE date="'.$today.'" GROUP BY name,numorder,choice;') or die('Erreur SQL !'.mysql_error()); 
+              $req = mysqli_query($bdd,'SELECT numorder,name,pitch, sum(quantity) as quantity, choice FROM orders o INNER JOIN ordercontent oc on oc.numorder=o.id INNER JOIN objet obj on obj.id=oc.choice WHERE date="'.$today.'" GROUP BY name,numorder,choice;') or die('Erreur SQL !'.mysqli_error($bdd)); 
               while($data = mysqli_fetch_assoc($req)){
                 if(array_key_exists($data['choice'], $tab[$data['numorder']]))
                   $tab[$data['numorder']][$data['choice']]+=$data['quantity'];
@@ -142,7 +142,7 @@ $objets=array();
                   $tab[$data['numorder']][$data['choice']]=$data['quantity'];
               }
               //On récup aussi le total des commandes:
-              $req = mysqli_query($bdd,'SELECT numorder,sum(quantity*prix) as total FROM orders o INNER JOIN ordercontent oc on oc.numorder=o.id INNER JOIN article a on a.id=oc.article WHERE date="'.$today.'" AND deleted=0 GROUP BY numorder ORDER BY name;') or die('Erreur SQL !'.mysql_error()); 
+              $req = mysqli_query($bdd,'SELECT numorder,sum(quantity*prix) as total FROM orders o INNER JOIN ordercontent oc on oc.numorder=o.id INNER JOIN article a on a.id=oc.article WHERE date="'.$today.'" AND deleted=0 GROUP BY numorder ORDER BY name;') or die('Erreur SQL !'.mysqli_error($bdd)); 
               while($data = mysqli_fetch_assoc($req)){
                 $tab[$data['numorder']]['total']=$data['total'];
               }
@@ -175,7 +175,7 @@ $objets=array();
                                           SELECT sum(quantity) as qty, choice as nom FROM orders o INNER JOIN ordercontent oc on oc.numorder=o.id INNER JOIN objet obj on obj.id=oc.choice WHERE date="'.$today.'" GROUP BY name,pitch,choice
                                           UNION ALL
                                           SELECT sum(quantity) as qty, nom FROM orders o INNER JOIN ordercontent oc on oc.numorder=o.id INNER JOIN article a on a.id=oc.article WHERE date="'.$today.'" AND deleted=0 GROUP BY nom
-                                        ) s GROUP BY nom;') or die('Erreur SQL !'.mysql_error()); 
+                                        ) s GROUP BY nom;') or die('Erreur SQL !'.mysqli_error($bdd)); 
 
               while($data = mysqli_fetch_assoc($req)){
                 $tab['total'][$data['nom']]=$data['total'];

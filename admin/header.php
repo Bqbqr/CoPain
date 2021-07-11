@@ -13,10 +13,8 @@
         <div id="navbar" class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
             <li><a href="index.php">Admin</a></li>
-            <li><a href="stocks.php">Stocks</a></li>
             <li><a href="show.php">Commandes du jour</a></li>
             <li><a href="delete.php">Suppression</a></li>
-            <li><a href="archives.php">Historique</a></li>
             <li><a href="stats.php">Statistiques</a></li>
           </ul>
         </div><!--/.nav-collapse -->

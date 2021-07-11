@@ -10,10 +10,10 @@ else      $emplacement="";
 // on se connecte à MySQL 
 include('secure/config.php');
 $return=array();
-$bdd=mysqli_connect($SQLhost, $SQLlogin, $SQLpass,$SQLdb) or die(mysql_error());
+$bdd=mysqli_connect($SQLhost, $SQLlogin, $SQLpass,$SQLdb) or die(mysqli_error($bdd));
  
 $sql= "SELECT numorder,name,pitch,nom,taken,sum(quantity) as quantity FROM orders o INNER JOIN ordercontent oc on oc.numorder=o.id INNER JOIN article a on a.id=oc.article WHERE date=CURDATE()+INTERVAL 1 DAY AND deleted=0 AND name='$nom' AND pitch='$emplacement' GROUP BY nom,pitch;";
-$req = mysqli_query($bdd,$sql) or die('Erreur SQL !'.mysql_error()); 
+$req = mysqli_query($bdd,$sql) or die('Erreur SQL !'.mysqli_error($bdd)); 
 
 //Cas où la commande existe déjà
 if (mysqli_num_rows($req) != 0) {
@@ -43,7 +43,7 @@ if (mysqli_num_rows($req) != 0) {
 } 
 
 $sql = "SELECT name, pitch FROM orders WHERE pitch='$emplacement' AND date=CURDATE()+INTERVAL 1 DAY AND deleted=0";  
-$req=mysqli_query($bdd,$sql) or die('Erreur SQL !'.$sql.'<br>'.mysql_error()); 
+$req=mysqli_query($bdd,$sql) or die('Erreur SQL !'.$sql.'<br>'.mysqli_error($bdd)); 
 
 if (mysqli_num_rows($req) != 0) { 
 	mysqli_close($bdd);  // on ferme la connexion 

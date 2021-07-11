@@ -9,17 +9,14 @@ else      $objetQ="";
 
 // on se connecte à MySQL 
 include('../secure/config.php');
-$db=mysql_connect($SQLhost, $SQLlogin, $SQLpass) or die(mysql_error());
-// sélection de la base  
-
-mysql_select_db('pain',$db)  or die('Erreur de selection '.mysql_error()); 
+$db=mysqli_connect($SQLhost, $SQLlogin, $SQLpass, $SQLdb) or die(mysqli_error($db));
  
 // on écrit la requête sql 
 $sql = "INSERT INTO objet (id,stock) VALUES('$objetN','$objetQ')"; 
 
 // on insère les informations du formulaire dans la table 
-mysql_query($sql) or die('Erreur SQL !'.$sql.'<br>'.mysql_error()); 
-mysql_close();  // on ferme la connexion 
+mysqli_query($db, $sql) or die('Erreur SQL !'.$sql.'<br>'.mysqli_error($db)); 
+mysqli_close($db);  // on ferme la connexion
 //header('Location: index.php');
 echo "Q".$objetQ."Objet ".$objetN." créé";
 ?>
