@@ -14,7 +14,7 @@ if(!$bdd=mysqli_connect($SQLhost, $SQLlogin,  $SQLpass, $SQLdb)){
 }
 
 //Verification double pour les cas de commande en double WTF:
-$req= mysqli_query($bdd,"SELECT name, pitch FROM orders WHERE name='$parameters[name]' AND date=CURDATE()+INTERVAL 1 DAY AND deleted=0") or die(mysqli_error($bdd));
+$req= mysqli_query($bdd,"SELECT name, pitch FROM orders WHERE name='$parameters[name]' AND pitch='$parameters[pitch]' AND date=CURDATE()+INTERVAL 1 DAY AND deleted=0") or die(mysqli_error($bdd));
 if (mysqli_num_rows($req) != 0){
 	//Fin de la requête, rien a ajouter car commande déjà faite
 	mysqli_close($bdd);  // on ferme la connexion 

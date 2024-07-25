@@ -119,7 +119,8 @@
           if (tmp.toString().indexOf(id) > '-1')
             row=i;
         }
-        array[key]=0;
+
+        delete array[key];
         table.deleteRow(row);
 
       }); 
@@ -239,7 +240,7 @@
         //Suppression d'une commande
         function deleteOrder(id) {
           $.ajax({
-            url: 'admin/del.php?value=1&id='+id, // Le nom du fichier indiqué dans le formulaire
+            url: 'del.php?value=1&id='+id, // Le nom du fichier indiqué dans le formulaire
             success: function(html) { // Je récupère la réponse du fichier PHP
               //Nothing
             },
@@ -286,7 +287,7 @@
 
 <?php 
 
-ini_set('display_errors', 1);
+//ini_set('display_errors', 1);
 
 // on se connecte à mysqli 
 include('secure/config.php');
@@ -323,7 +324,7 @@ $db=mysqli_connect($SQLhost, $SQLlogin, $SQLpass,$SQLdb) or die(mysqli_error());
         ?>
     </h3>
     <p>
-      Le pain est disponible dès 8h30.
+      Le pain est à récupérer entre 8h30 et 11h.<br><i>Bread is available from 8.30am to 11am</i>
       </p>
       <div class="row">
         <div class="col-md-3">
@@ -414,8 +415,6 @@ $db=mysqli_connect($SQLhost, $SQLlogin, $SQLpass,$SQLdb) or die(mysqli_error());
           ?>
         </div>
       </div>
-      <!-- div test -->
-
     </div> <!-- /container -->
   </body>
 </html>
